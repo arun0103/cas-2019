@@ -175,6 +175,16 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /* 
+        ***** Added by Arun 
+        yajra\Datatables\DatatablesServiceProvider::class,
+        Orchestra\Tenanti\TenantiServiceProvider::class,
+        Orchestra\Tenanti\CommandServiceProvider::class,
+        */
+        
+        Jimmyjs\ReportGenerator\ServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
+
     ],
 
     /*
@@ -223,6 +233,18 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        /* 
+        ***** Added by Arun 
+        'Datatables' => yajra\Datatables\Facades\Datatables::class,
+        'Tenanti' => Orchestra\Support\Facades\Tenanti::class,
+        */
+        
+
+        'PdfReport' => Jimmyjs\ReportGenerator\Facades\PdfReportFacade::class,
+        'ExcelReport' => Jimmyjs\ReportGenerator\Facades\ExcelReportFacade::class,
+        'CSVReport' => Jimmyjs\ReportGenerator\Facades\CSVReportFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

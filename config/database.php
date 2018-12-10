@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    'fetch' => PDO::FETCH_CLASS,
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
