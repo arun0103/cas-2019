@@ -14,6 +14,7 @@ use App\Company;
 use App\Employee;
 use App\Shift;
 use App\Student;
+use App\Roster;
 
 class EmployeeController extends Controller
 {
@@ -38,8 +39,8 @@ class EmployeeController extends Controller
         return view('employees');
     }
     public function getAllEmployeesOfCompany(){
-        $company_id =Session::get('company_id');
-        $employees =Employee::where('company_id',$company_id)->with(['designation'=>function($query){
+        $company_id = Session::get('company_id');
+        $employees = Employee::where('company_id',$company_id)->with(['designation'=>function($query){
             $query->pluck('name');
         }])->get();
         
@@ -60,18 +61,34 @@ class EmployeeController extends Controller
     }
 
     public function getEmployeeById($id){
-        $comp_id=Session::get('company_id');
+        $comp_id = Session::get('company_id');
         $employee = Employee::where([['employee_id',$id],['company_id',$comp_id]])->first();
         return $employee;
     }
     public function getEmployeesByBranch($id){
-        $comp_id=Session::get('company_id');
+        $comp_id = Session::get('company_id');
         $employee = Employee::where([['branch_id',$id],['company_id',$comp_id]])->get();
         return $employee;
     }
     public function updateEmployee(Request $request, $id){
-        $comp_id=Session::get('company_id');
+        $comp_id = Session::get('company_id');
         $e = Employee::where([['company_id',$comp_id],['employee_id',$id]])->first();
+        if($e->email == null && $request->email != null){
+            $user = User::create([
+                'company_id'        =>  $request->company_id,
+                'employee_id'       =>  $request->employee_id,
+                'name'              =>  $request->name,
+                'email'             =>  $request->email,
+                'role'              =>  'employee',
+                'password'          =>  bcrypt('test@123'),
+                'added_by'          =>  Session::get('user_id'),
+                'password_changed'  =>  0
+            ]);
+            $user->save();
+        }else if($e->email != $request->email){
+            $findUser = User::where([['company_id',$request->company_id],['employee_id',$request->employee_id]])->first();
+            
+        }
         $e->employee_id = $request->employee_id;
         $e->name = $request->name;
         $e->mobileNumber1 = $request->mobileNumber1;
@@ -136,16 +153,28 @@ class EmployeeController extends Controller
             ];
             return response()->json($dataToSend);
         }
-        
-
-
     }
     public function deleteEmployee($id){
         $employee = Employee::where('employee_id',$id)->delete();
+        //$user = User::where('email',$employee->email)->delete();
         return response()->json($employee);
     }
     public function addEmployee(Request $request){
         $new  = Employee::create($request->input());
+        
+        if($request->email != null){
+            $user = User::create([
+                'company_id'    =>$new->company_id,
+                'employee_id'   =>$request->employee_id,
+                'name'          =>$new->name,
+                'email'         =>$new->email,
+                'role'          =>'employee',
+                'password'      =>bcrypt('test@123'),
+                'added_by'      =>Session::get('user_id'),
+                'password_changed'=>0
+            ]);
+            $user->save();
+        }
         $dataToSend = [
             'orig_data'=>$new,
             'branch_name'=>Branch::where([['branch_id',$new->branch_id],['company_id',$new->company_id]])->pluck('name'),
@@ -166,5 +195,14 @@ class EmployeeController extends Controller
         }
         return $message;
     }
+    public function getEmployeeMonthlyLogDetails($month,$year){
+        $startDate = $year .'-'.$month.'-01';
+        $endDate = $year.'-'.$month.'-31';
+        $employeeRosters = Roster::where([['company_id',Session::get('company_id')],['employee_id',Session::get('user_id')]])
+                                ->whereBetween('date',[$startDate,$endDate])
+                                ->with('shift')->get();
+        return response()->json($employeeRosters);
+    }
+
 
 }

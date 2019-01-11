@@ -16,19 +16,19 @@ class Employee extends Model
      */
     protected $fillable = [
         'employee_id','name', 'email','mobileNumber1','mobileNumber2','contact',
-         'country', 'state','city','street_address_1','street_address_2','postal_code',
-         'dob','gender','marital_status','anniversary','father_name',
-         'educational_qualification','professional_qualification','experience',
-         'image','imageType',
-         'card_number','dept_id','category_id','company_id','branch_id','designation_id','Permanent_Temporary',
-         'week_off_day','additional_off_day','additional_off_week',
-         'shift_1','shift_2','shift_3','shift_4','change_by_week','change_after_days','changed_on_day',
-         'half_day_shift','half_day_on',
-         'comp_off_applicable','overtime_applicable',
-         'reporting_officer_1','reporting_officer_2',
-         'joining_date','leaving_date','referred_by',
-         'ESI_number','PF_number','UAN_number','PAN_number','wage_type',
-         'bank_name','IFSC_code','bank_branch','bank_account_number','created_at','updated_at'
+        'country', 'state','city','street_address_1','street_address_2','postal_code',
+        'dob','gender','marital_status','anniversary','father_name',
+        'educational_qualification','professional_qualification','experience',
+        'image','imageType',
+        'card_number','dept_id','category_id','company_id','branch_id','designation_id','Permanent_Temporary',
+        'week_off_day','additional_off_day','additional_off_week',
+        'shift_1','shift_2','shift_3','shift_4','change_by_week','change_after_days','changed_on_day',
+        'half_day_shift','half_day_on',
+        'comp_off_applicable','overtime_applicable',
+        'reporting_officer_1','reporting_officer_2',
+        'joining_date','leaving_date','referred_by',
+        'ESI_number','PF_number','UAN_number','PAN_number','wage_type',
+        'bank_name','IFSC_code','bank_branch','bank_account_number','created_at','updated_at'
     ];
      
     public function company(){

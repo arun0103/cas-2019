@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use Session;
 use Carbon\Carbon;
 use App\Employee;
 use App\Punch;
 use App\Company;
 use App\Student;
 use App\Student_Punch;
+use App\Roster;
+use EmployeeController;
 
 class HomeController extends Controller
 {
@@ -28,10 +31,11 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {   if(Auth::check()){
+    public function index(){   
+        if(Auth::check()){
             $loggedInUser = Auth::user();
-            session(['user_id' => $loggedInUser->id]);
+            //dd($loggedInUser);
+            session(['user_id' => $loggedInUser->employee_id]);
             session(['company_id' => $loggedInUser->company_id]);
             session(['role' => $loggedInUser->role]);
             session(['user_name' =>$loggedInUser->name]);
@@ -77,6 +81,26 @@ class HomeController extends Controller
                         'late'=>$lateStudents
                     ];
                     return view('pages/admin/dashboard-institute',['employeeDetails'=>$employeeDetails, 'studentDetails'=>$studentDetails]);
+                }
+            }else if($loggedInUser->role == 'employee'){  
+                $company_type = Company::where('company_id',$loggedInUser->company_id)->first()->company_type;
+                session(['company_type' => $company_type]);
+                if($company_type =='business'){
+                    $now = Carbon::now();
+                    $employeeTotalRosters = Roster::where('employee_id',$loggedInUser->employee_id)->get();//->whereBetween('date',array($now->year.'-'.$now->month.'-01',$now->year.'-'.$now->month.'-31'))->get();
+                    $employeeAbsentRosters = Roster::where([['employee_id',$loggedInUser->employee_id],['final_half_1','AB'],['final_half_2','AB']])->whereDate('date','<=',$now)->get();//->whereBetween('date',array($now->year.'-'.$now->month.'-01',$now->year.'-'.$now->month.'-31'))->get();
+                    $employeePresentRosters = Roster::where([['employee_id',$loggedInUser->employee_id],['final_half_1','PR'],['final_half_2','PR']])->whereDate('date','<=',$now)->get();
+                    if(count($employeeTotalRosters)>0){
+                        $rosterDetails = [
+                            'total'     =>  count($employeeTotalRosters),
+                            'present'   =>  count($employeePresentRosters),
+                            'absent'    =>  count($employeeAbsentRosters),
+                            'late'      =>  0
+                        ];
+                        return view('pages/employee/dashboard',['roster'=>$rosterDetails]);
+                    }else{
+                        return view('pages/employee/dashboard-no-data');
+                    }
                 }
                 
             }

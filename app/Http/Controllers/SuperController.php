@@ -41,6 +41,7 @@ class SuperController extends Controller
         $admin->company_id = $req->input('company_id');
         $admin->password = bcrypt('admin');
         $admin->added_by = $added_by;
+        $admin->employee_id = $req->input('company_id')."_admin";
         if($admin->save()){
             
             $company = new Company([

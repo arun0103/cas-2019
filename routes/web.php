@@ -269,6 +269,8 @@ Route::get('/getPunchDetails/{branch_id}/{employee_id}/{date}', 'AdminController
 Route::post('/updatePunchRecord/{id}', 'AdminController@updatePunch');
 Route::post('/insertPunchRecord', 'AdminController@insertPunchRecord');
 Route::delete('/deletePunchRecord/{id}', 'AdminController@deletePunch');
+
+
 ///////////////////////////////////////////////////////////////////////////////
 /////////////// File Upload
 Route::get('/file/upload',function (){
@@ -276,12 +278,16 @@ Route::get('/file/upload',function (){
 })->name('upload');
 
 Route::post('/uploadFile', 'AdminController@uploadFile');
+
+
 ///////////////////////////////////////////////////////////////////////
 //////////////////// Employee
 
 Route::get('/employee/dashboard', function () {
     return view('pages/employee/dashboard');
 })->name('employeeDashboard');
+
+Route::get('/employee/roster/{month}/{year}','EmployeeController@getEmployeeMonthlyLogDetails');
 
 
 
