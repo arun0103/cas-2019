@@ -99,7 +99,23 @@ class RosterController extends Controller
         $company_id = Session::get('company_id');
         $branches = Branch::where('company_id',$company_id)->get();
         $shifts = Shift::where('company_id',$company_id)->get();
-        $company_id = Session::get('company_id');
+        $branch_id = $request->input('selectedBranchView');
+        $employee_id = $request->input('selectedEmployeeView');
+        
+        $date = $request->input('dateView');
+        
+        $rosterDetail = Roster::where([['company_id',$company_id],['employee_id',$employee_id],['date',$date]])->with('branch','department','shift','employee')->get();
+        //dd($rosterDetail);
+        if($rosterDetail != null){
+            return view('pages/admin/roster/rosters',['allBranches'=>$branches, 'shifts'=>$shifts, 'rosterDetail'=>$rosterDetail]);
+        }else{
+            return Redirect::back()->with('failMessage','No Roster found !');
+        }
+    }
+    public function viewStudentRoster(Request $request){
+        $institution_id = Session::get('company_id');
+        $grades = Student_Grade::where('institution_id',$institution_id)->get();
+        $sectionss = Student_Section::where('institution_id',$institution_id)->get();
         $branch_id = $request->input('selectedBranchView');
         $employee_id = $request->input('selectedEmployeeView');
         

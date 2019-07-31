@@ -94,16 +94,21 @@ Route::delete('/deleteSection/{id}','StudentController@deleteSection');
 
 Route::get('/admin/sections','StudentController@getSections')->name('viewSections');
 
-///////////////// Reports
-Route::get('/admin/reports', 'ReportController@viewReportPage')->name('reportSelect');
+///////////////// Reports Employee
+Route::get('/admin/reports', 'ReportController@viewEmployeeReportPage')->name('reportSelect');
+
 
 Route::get('/getEmployees','ReportController@getEmployees');
-Route::get('/generateReport','ReportController@generateReport');
+Route::get('/generateReport','ReportController@generateEmployeeReport');
+
 
 Route::get('/pdfview',array('as'=>'pdfview','uses'=>'ReportController@pdfview'));
 Route::get('/reports/mismatch','ReportController@mismatchReport');
 
-
+//////////////////////// Reports Student
+Route::get('/admin/reports/student', 'ReportController@viewStudentReportPage')->name('reportSelectStudent');
+Route::get('/generateReportStudent','ReportController@generateReportStudent');
+Route::get('/getStudents','ReportController@getStudents');
 
 ////////////////////// Employee
 Route::get('/admin/employee/add','AdminController@showAddEmployeePage')->name('addEmployee');
@@ -250,6 +255,7 @@ Route::delete('/deleteHoliday/{id}','HolidayController@deleteHoliday');
 Route::get('/admin/rosters/view', 'RosterController@rosters')->name('rosters');
 Route::post('/generateRoster', 'RosterController@generate');
 Route::post('/viewRoster', 'RosterController@view');
+Route::get('/viewStudentRoster', 'RosterController@viewStudentRoster')->name('viewStudentRoster');
 
 Route::get('/getRosterData/{id}','RosterController@getRosterData');
 Route::put('/updateRoster','RosterController@updateRoster');

@@ -20,8 +20,8 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
-  <link rel="stylesheet" href="{{asset('js/plugins/bootstrap/css/bootstrap.min.css')}}">
-  <link rel="stylesheet" href="{{asset('js/plugins/bootstrap/css/bootstrap-grid.min.css')}}">
+  <!-- <link rel="stylesheet" href="{{asset('js/plugins/bootstrap/css/bootstrap.min.css')}}"> -->
+  <!-- <link rel="stylesheet" href="{{asset('js/plugins/bootstrap/css/bootstrap-grid.min.css')}}"> -->
   <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/> -->
   
   <link rel="stylesheet" href="{{asset('js/plugins/datepicker/datepicker3.css')}}">
@@ -67,114 +67,114 @@
         <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="dropdown" style="margin-right:20px;">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="link_reports">Reports <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li>
                     <div class="dropdown-submenu">
-                      <a href="#" >Employee</a>
-                      <div class="dropdown-content"><a href="#">Absent</a> </div>
+                      <a href="{{route('reportSelect')}}" >Employee</a>
+                      <!-- <div class="dropdown-content"><a href="#">Absent</a> </div> -->
                     </div>
                 </li>
                 <li class="divider"></li>
-                <li><a href="#">Student</a></li>
+                <li><a href="{{route('reportSelectStudent')}}">Student</a></li>
               </ul>
             </li>
             <li style="margin-right:20px;"><a href="#">Contact Us<span class="sr-only">(current)</span></a></li>
             <li style="margin-right:20px;"><a href="#"><i class="fa fa-info-circle"></i> Help</a></li>
           </ul>
         </div>
-        <!-- Messages Dropdown Menu -->
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="fa fa-comments-o"></i>
-            <span class="badge badge-danger navbar-badge">3</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-            <a href="#" class="dropdown-item">
-              <!-- Message Start -->
-              <!-- <div class="media">
-                <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                <div class="media-body">
-                  <h3 class="dropdown-item-title">
-                    Brad Diesel
-                    <span class="float-right text-sm text-danger"><i class="fa fa-star"></i></span>
-                  </h3>
-                  <p class="text-sm">Call me whenever you can...</p>
-                  <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
-                </div>
-              </div> -->
-              <!-- Message End -->
-            <!-- </a>
-            <div class="dropdown-divider"></div> -->
-            <!-- <a href="#" class="dropdown-item">
-              <!-- Message Start -->
-              <!-- <div class="media">
-                <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                <div class="media-body">
-                  <h3 class="dropdown-item-title">
-                    John Pierce
-                    <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
-                  </h3>
-                  <p class="text-sm">I got your message bro</p>
-                  <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
-                </div>
-              </div> -->
-              <!-- Message End -->
-            <!--</a> -->
-            <!-- <div class="dropdown-divider"></div> -->
-            <!-- <a href="#" class="dropdown-item">
-              <!-- Message Start -->
-              <!-- <div class="media">
-                <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                <div class="media-body">
-                  <h3 class="dropdown-item-title">
-                    Nora Silvester
-                    <span class="float-right text-sm text-warning"><i class="fa fa-star"></i></span>
-                  </h3>
-                  <p class="text-sm">The subject goes here</p>
-                  <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
-                </div>
-              </div> -->
-              <!-- Message End -->
-            <!--</a> -->
-            <!-- <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-          </div> 
-        </li> -->
-        <!-- Notifications Dropdown Menu -->
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="fa fa-bell-o"></i>
-            <span class="badge badge-warning navbar-badge">15</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-            <span class="dropdown-item dropdown-header">15 Notifications</span>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
-              <i class="fa fa-envelope mr-2"></i> 4 new messages
-              <span class="float-right text-muted text-sm">3 mins</span>
+          <!-- Messages Dropdown Menu -->
+            <!-- <li class="nav-item dropdown">
+              <a class="nav-link" data-toggle="dropdown" href="#">
+                <i class="fa fa-comments-o"></i>
+                <span class="badge badge-danger navbar-badge">3</span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <!-- <div class="media">
+                    <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        Brad Diesel
+                        <span class="float-right text-sm text-danger"><i class="fa fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">Call me whenever you can...</p>
+                      <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
+                    </div>
+                  </div> -->
+                  <!-- Message End -->
+                <!-- </a>
+                <div class="dropdown-divider"></div> -->
+                <!-- <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <!-- <div class="media">
+                    <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        John Pierce
+                        <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">I got your message bro</p>
+                      <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
+                    </div>
+                  </div> -->
+                  <!-- Message End -->
+                <!--</a> -->
+                <!-- <div class="dropdown-divider"></div> -->
+                <!-- <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <!-- <div class="media">
+                    <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        Nora Silvester
+                        <span class="float-right text-sm text-warning"><i class="fa fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">The subject goes here</p>
+                      <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
+                    </div>
+                  </div> -->
+                  <!-- Message End -->
+                <!--</a> -->
+                <!-- <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+              </div> 
+            </li> -->
+            <!-- Notifications Dropdown Menu -->
+            <!-- <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#">
+              <i class="fa fa-bell-o"></i>
+              <span class="badge badge-warning navbar-badge">15</span>
             </a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
-              <i class="fa fa-users mr-2"></i> 8 friend requests
-              <span class="float-right text-muted text-sm">12 hours</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
-              <i class="fa fa-file mr-2"></i> 3 new reports
-              <span class="float-right text-muted text-sm">2 days</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-          </div>
-        </li> -->
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <span class="dropdown-item dropdown-header">15 Notifications</span>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <i class="fa fa-envelope mr-2"></i> 4 new messages
+                <span class="float-right text-muted text-sm">3 mins</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <i class="fa fa-users mr-2"></i> 8 friend requests
+                <span class="float-right text-muted text-sm">12 hours</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <i class="fa fa-file mr-2"></i> 3 new reports
+                <span class="float-right text-muted text-sm">2 days</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+            </div>
+          </li> -->
         <li>
         @if(Session::get('user_id'))
           <a href="{{ route('logout') }}">
             <i class="fa fa-sign-out icon-4x" id="btn_logout" style="font-size:20px;" aria-hidden="true" data-toggle="tooltip" title="Log Out"></i>
           </a>
         @endif
-          <!-- <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a> -->
+          <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
         </li>
       </ul>
     </nav>
@@ -522,6 +522,17 @@
                       </a>
                     </li>
                   </ul>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item ">
+                      <a href="{{ route('viewStudentRoster') }}" class="nav-link ">
+                        <i class="nav-icon fa fa-pagelines"></i>
+                        <p>
+                          Rosters
+                        </p>
+                      </a>
+                    </li>
+                  </ul>
+
                 </li>
               @endif
               @if(session()->get('role')=='super')
@@ -568,6 +579,7 @@
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Control sidebar content goes here -->
       
+
     </aside>
     <!-- /.control-sidebar -->
 
@@ -588,7 +600,7 @@
   <script src="{{asset('js/plugins/jquery/jquery-3.3.1.js')}}"></script>
   <script src="{{asset('js/plugins/fullcalendar/lib/jquery-ui.min.js')}}"></script>
   <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
-  <script src="{{asset('js/plugins/bootstrap/js/bootstrap.js')}}"></script>
+  <!-- <script src="{{asset('js/plugins/bootstrap/js/bootstrap.js')}}"></script> -->
   <!-- <script src="{{asset('js/plugins/fastclick/fastclick.js')}}"></script> -->
   @yield('footer')
   <!-- Bootstrap -->
@@ -624,6 +636,11 @@
     });
     $('#btn_logout').click(function(){
 
+    });
+
+    $('#link_reports').click(function(){
+      // alert('Clicked');
+      // $('.dropdown-submenu').display('true');
     });
     // jQuery.event.special.touchstart = {
       //   setup: function( _, ns, handle ){

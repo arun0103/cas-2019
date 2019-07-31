@@ -1,0 +1,15 @@
+ALTER TABLE `employees` ADD `auto_shift` BOOLEAN NULL DEFAULT FALSE AFTER `shift_4`;
+
+
+
+root      1452  3.4  8.3 2162384 84772 ?       Sl   Nov13  45:27 java -jar /root/javaFiles/timeAttendanceSystem/ProcessData.jar
+root      1496  0.1  2.2 2162432 22368 ?       Sl   Nov13   1:31 java -jar /root/javaFiles/servers/Server.jar
+root     22768  0.0  0.0  12948   876 pts/0    S+   09:02   0:00 grep --color=auto java
+root@cas:~/javaFiles/servers/sms#
+-------------------------------------------------------------------------------------------------------------------------------
+
+
+2075-9-21 updates
+-----------------
+ALTER TABLE `users` CHANGE `added_by` `added_by` VARCHAR(255) NOT NULL;
+ALTER TABLE `companies` CHANGE `added_by` `added_by` VARCHAR(255) NOT NULL;

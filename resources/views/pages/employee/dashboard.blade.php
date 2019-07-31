@@ -9,6 +9,10 @@
     max-height: 185px !important;
     overflow-y: scroll;
   }
+  #no_roster_info{
+    text-align: center;
+
+  }
 </style>
 <link rel="stylesheet" href="{{asset('css/MonthPicker.css')}}">
 <link rel="stylesheet" href="{{asset('js/plugins/datatables/css/dataTables.bootstrap4.css')}}">
@@ -149,7 +153,9 @@
                       </tbody>
                     </table>
                     </div>
-                    <p id="no_roster_info">You have no rosters assigned for this month. Please Contact Admin!</p>
+                    <p id="no_roster_info">Dear User,
+                    You have no rosters assigned for this month. 
+                    Please Contact Admin!</p>
 
 
                     <div class="chart">
@@ -467,7 +473,6 @@
       $.get('/employee/roster/'+month[1]+'/'+month[0],function(data){
         console.log(data);
         if(data.length<=0){
-          //alert("No roster found of month "+monthName+"!");
           console.log('No Roster Found!');
 
           $('#no_roster_info').show();
@@ -530,7 +535,14 @@
           $('#tbody_roster').empty();
           for($i=0;$i<data.length;$i++){
             //console.log(data[$i]);
-            var rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+data[$i].shift['name']+'</td><td>'+data[$i]['final_half_1']+'</td><td>'+data[$i]['final_half_2']+'</td><td><button>Apply Leave</button></td></tr>';
+            var rosterDetail ='';
+            if(month[1]== today.getMonth()+1){
+              if(today.getDate() < $i+1)
+                rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+data[$i].shift['name']+'</td><td>'+data[$i]['final_half_1']+'</td><td>'+data[$i]['final_half_2']+'</td><td><button>Apply Leave</button></td></tr>';
+              else
+               rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+data[$i].shift['name']+'</td><td>'+data[$i]['final_half_1']+'</td><td>'+data[$i]['final_half_2']+'</td><td></td></tr>';
+            }else
+              rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+data[$i].shift['name']+'</td><td>'+data[$i]['final_half_1']+'</td><td>'+data[$i]['final_half_2']+'</td><td></td></tr>';
             $('#tbody_roster').append(rosterDetail);
            
 
@@ -556,7 +568,7 @@
           });
 
           $toBePresentDays = $totalRoster - $holidaysCount;
-          $('#present_present').text($presentDays).change();
+          $('#present_present').texnt($presentDays).change();
           $('#present_total').text($toBePresentDays).change();
           $('#progress_present').width(($presentDays*100/$toBePresentDays).toString()+"%");
 
