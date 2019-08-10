@@ -292,7 +292,12 @@ class ReportController extends Controller
                                 }
                             }
                         }
-                        return round($lateMinutes/60,2);
+                        $late_hrs = floor($lateMinutes/60);
+                        if($late_hrs<1)
+                            $late_hrs = 0;
+                        $late_minutes= $lateMinutes%60;
+
+                        return $late_hrs.":".$late_minutes;
                     },
                     'Early IN'=>function($result){
                         $earlyCount = 0;
@@ -383,7 +388,13 @@ class ReportController extends Controller
                                 }
                             }
                         }
-                        return round($earlyMinutes/60,2);
+                        $early_hrs = floor($earlyMinutes/60);
+                        if($early_hrs<1)
+                            $early_hrs = 0;
+                        $early_minutes= $earlyMinutes%60;
+
+                        return $early_hrs.":".$early_minutes;
+                        
                     },
                     'Present' =>function($result){
                         $present_days = 0;
