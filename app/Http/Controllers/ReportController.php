@@ -81,13 +81,19 @@ class ReportController extends Controller
         $comp_id = Session::get('company_id');
         $fromDate = $req->fromDate;
         $this->fromDate = $fromDate;
-        $toDate = $req ->toDate;
+        if($req->toDate == null){
+            $toDate = new Carbon();
+        }else{
+            $toDate = $req ->toDate;
+        }
         $branches = $req->branchSelected;
-        $departments = $req->departmentSelected;
+        $departments = $req->selectedDepartments;
         $employees = $req->selectedEmployees;
         $reportType = $req->selectedReportType;
         $shifts = $req->selectedShifts;
         $get_report_type = $req->generate_type;
+
+        //dd(count($departments));
         switch($reportType){
             case 'rep_absent': /// Completed
                 // Report title
@@ -140,31 +146,269 @@ class ReportController extends Controller
                     'From' => $fromDate,
                     'To ' => $toDate,
                 ];
-                $queryBuilder = Punch::where('company_id',$comp_id)->with('employee');
+                if(count($departments)>1){
+                    $queryBuilder = Employee::where('company_id',$comp_id)->whereBetween('dept_id',array($departments))
+                                                ->with('first_shift','second_shift','third_shift','fourth_shift')
+                                                ->with(['punch_records'=> function($query) use($fromDate,$toDate){
+                                                    $query->whereBetween('punch_date',[$fromDate, $toDate])->with('roster');
+                                                }])
+                                                ->with(['rosters'=> function ($query) use($fromDate,$toDate) {
+                                                     $query->whereBetween('date', [$fromDate, $toDate]);
+                                                 }]);
+
+                }else{
+                    $queryBuilder = Employee::where('company_id',$comp_id)->where('dept_id',$departments)
+                                                ->with('first_shift','second_shift','third_shift','fourth_shift')
+                                                ->with(['punch_records'=> function($query) use($fromDate,$toDate){
+                                                    $query->whereBetween('punch_date',[$fromDate, $toDate])->with('roster');
+                                                }])
+                                                ->with(['rosters'=> function ($query) use($fromDate,$toDate) {
+                                                    $query->whereBetween('date', [$fromDate, $toDate]);
+                                                }]);
+
+                                                
+                }
                 //dd($queryBuilder);
+                //dd($queryBuilder->toSql());
+                
+                
                 $columns = [
-                    'Emp Code' => 'emp_id',
-                    'Name' =>function($result){
-                        return $result->employee['name'];
-                    },
+                    'Emp Code' => 'employee_id',
+                    'Name' =>'name',
                     'Late IN'=>function($result){
-                        if($result->late_in >0 && $result->late_in !=null)
-                            return 'Y'; 
-                        else    
-                            return 'N';
+                        //dd($result);
+                        $lateCount = 0;
+                        $lateMinutes = 0;
+                        //dd($result->first_shift);
+                        $shift_1_timing = $result->first_shift['start_time'];
+                        //dd($shift_1_timing);
+                        $shift_2_timing = $result->second_shift['start_time'];
+                        $shift_3_timing = $result->third_shift['start_time'];
+                        $shift_4_timing = $result->fourth_shift['start_time'];
+
+                        $shift_1_id = $result->first_shift['shift_id'];
+                        $shift_2_id = $result->second_shift['shift_id'];
+                        $shift_3_id = $result->third_shift['shift_id'];
+                        $shift_4_id = $result->fourth_shift['shift_id'];
+                        
+                        foreach($result->punch_records as $punch){
+                            // identify the shift in roster and calculate
+                            $roster_shift = $punch->roster['shift_id'];
+                            $punch_time = new carbon($punch->punch_1);
+                            $start_date_time = new Carbon($punch->punch_date);
+                            if($roster_shift == $shift_1_id){
+                                $start_date_time->addHours(substr($shift_1_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_1_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) >$result->first_shift['grace_late'] && $punch_time > $start_date_time){
+                                    $lateCount++;
+                                    $lateMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_2_id){
+                                $start_date_time->addHours(substr($shift_2_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_2_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) >$result->second_shift['grace_late'] && $punch_time > $start_date_time){
+                                    $lateCount++;
+                                    $lateMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_3_id){
+                                $start_date_time->addHours(substr($shift_3_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_3_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) >$result->third_shift['grace_late'] && $punch_time > $start_date_time){
+                                    $lateCount++;
+                                    $lateMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_4_id){
+                                $start_date_time->addHours(substr($shift_4_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_4_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) >$result->fourth_shift['grace_late'] && $punch_time > $start_date_time){
+                                    $lateCount++;
+                                    $lateMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }
+                           
+                        }
+                        return $lateCount;
+                        // if($result->late_in >0 && $result->late_in !=null)
+                        //     return 'Y'; 
+                        // else    
+                        //     return 'N';
                     },
-                    'Late Hrs'=>'late_in',
+                    'Late Hrs'=>function($result){
+                        //dd($result);
+                        $lateCount = 0;
+                        $lateMinutes = 0;
+                        //dd($result->first_shift['start_time']);
+                        $shift_1_timing = $result->first_shift['start_time'];
+                        $shift_2_timing = $result->second_shift['start_time'];
+                        $shift_3_timing = $result->third_shift['start_time'];
+                        $shift_4_timing = $result->fourth_shift['start_time'];
+
+                        $shift_1_id = $result->first_shift['shift_id'];
+                        $shift_2_id = $result->second_shift['shift_id'];
+                        $shift_3_id = $result->third_shift['shift_id'];
+                        $shift_4_id = $result->fourth_shift['shift_id'];
+
+                        foreach($result->punch_records as $punch){
+                            // 
+                            $roster_shift = $punch->roster['shift_id'];
+                            $punch_time = new carbon($punch->punch_1);
+                            $start_date_time = new Carbon($punch->punch_date);
+
+                            if($roster_shift == $shift_1_id){
+                                $start_date_time->addHours(substr($shift_1_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_1_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) >$result->first_shift['grace_late'] && $punch_time > $start_date_time){
+                                    $lateCount++;
+                                    $lateMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_2_id){
+                                $start_date_time->addHours(substr($shift_2_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_2_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) >$result->second_shift['grace_late'] && $punch_time > $start_date_time){
+                                    $lateCount++;
+                                    $lateMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_3_id){
+                                $start_date_time->addHours(substr($shift_3_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_3_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) >$result->third_shift['grace_late'] && $punch_time > $start_date_time){
+                                    $lateCount++;
+                                    $lateMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_4_id){
+                                $start_date_time->addHours(substr($shift_4_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_4_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) >$result->fourth_shift['grace_late'] && $punch_time > $start_date_time){
+                                    $lateCount++;
+                                    $lateMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }
+                        }
+                        return round($lateMinutes/60,2);
+                    },
                     'Early IN'=>function($result){
-                        if($result->early_in >0 && $result->early_in !=null)
-                            return 'Y'; 
-                        else    
-                            return 'N';
+                        $earlyCount = 0;
+                        $earlyMinutes = 0;
+
+                        $shift_1_timing = $result->first_shift['start_time'];
+                        $shift_2_timing = $result->second_shift['start_time'];
+                        $shift_3_timing = $result->third_shift['start_time'];
+                        $shift_4_timing = $result->fourth_shift['start_time'];
+
+                        $shift_1_id = $result->first_shift['shift_id'];
+                        $shift_2_id = $result->second_shift['shift_id'];
+                        $shift_3_id = $result->third_shift['shift_id'];
+                        $shift_4_id = $result->fourth_shift['shift_id'];
+
+                        foreach($result->punch_records as $punch){
+                            
+                            $start_date_time = new Carbon($punch->punch_date);
+                            $start_date_time->addHours(substr($shift_1_timing,0,2));
+                            $start_date_time->addMinutes(substr($shift_1_timing,3,2));
+
+                            $punch_time = new carbon($punch->punch_1);
+
+                            if($start_date_time->diffInMinutes($punch_time) > $result->first_shift['grace_early'] && $punch_time < $start_date_time){ // early will be calculated if greater than grace period
+                                $earlyCount++;
+                                $earlyMinutes += $punch_time->diffInMinutes($start_date_time);
+                            }
+                            
+                        }
+                        //dd($earlyMinutes);
+                        return $earlyCount;
+                        // if($result->early_in >0 && $result->early_in !=null)
+                        //     return 'Y'; 
+                        // else    
+                        //     return 'N';
                     },
                     'Early Hrs' =>function($result){
-                        return round($result->early_in/60,2);
+                        $earlyCount = 0;
+                        $earlyMinutes = 0;
+                        //dd($result->first_shift['start_time']);
+                        $shift_1_timing = $result->first_shift['start_time'];
+                        $shift_2_timing = $result->second_shift['start_time'];
+                        $shift_3_timing = $result->third_shift['start_time'];
+                        $shift_4_timing = $result->fourth_shift['start_time'];
+
+                        $shift_1_id = $result->first_shift['shift_id'];
+                        $shift_2_id = $result->second_shift['shift_id'];
+                        $shift_3_id = $result->third_shift['shift_id'];
+                        $shift_4_id = $result->fourth_shift['shift_id'];
+
+                        foreach($result->punch_records as $punch){
+                            // 
+                            $roster_shift = $punch->roster['shift_id'];
+                            $punch_time = new carbon($punch->punch_1);
+                            $start_date_time = new Carbon($punch->punch_date);
+
+                            if($roster_shift == $shift_1_id){
+                                $start_date_time->addHours(substr($shift_1_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_1_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) <= $result->first_shift['grace_early'] && $punch_time < $start_date_time){
+                                    $earlyCount++;
+                                    $earlyMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_2_id){
+                                $start_date_time->addHours(substr($shift_2_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_2_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) <= $result->second_shift['grace_early'] && $punch_time < $start_date_time){
+                                    $earlyCount++;
+                                    $earlyMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_3_id){
+                                $start_date_time->addHours(substr($shift_3_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_3_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) <= $result->third_shift['grace_early'] && $punch_time < $start_date_time){
+                                    $earlyCount++;
+                                    $earlyMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }else if($roster_shift == $shift_4_id){
+                                $start_date_time->addHours(substr($shift_4_timing,0,2));
+                                $start_date_time->addMinutes(substr($shift_4_timing,3,2));
+                                
+                                if($punch_time->diffInMinutes($start_date_time) <= $result->fourth_shift['grace_early'] && $punch_time < $start_date_time){
+                                    $earlyCount++;
+                                    $earlyMinutes += $punch_time->diffInMinutes($start_date_time);
+                                }
+                            }
+                        }
+                        return round($earlyMinutes/60,2);
                     },
-                    'Present' =>'',
-                    'Absent' =>'',
+                    'Present' =>function($result){
+                        $present_days = 0;
+                        //dd($result);
+                        foreach($result->punch_records as $punch){
+                            if($punch->roster['final_half_1']=="PR")
+                                $present_days += 0.5;
+                            if($punch->roster['final_half_2']=="PR")
+                                $present_days += 0.5;
+                        }
+
+                        return $present_days;
+                    },
+                    'Absent' =>function($result){
+                        $absent_days = 0;
+                        //dd($result);
+                        foreach($result->rosters as $roster){
+                            if($roster['final_half_1']=="AB")
+                                $absent_days += 0.5;
+                            if($roster['final_half_2']=="AB")
+                                $absent_days += 0.5;
+                        }
+
+                        return $absent_days;
+                    },
                     'W/Off' =>'',
                     'P/HOL' =>'',
                     'Comp' =>'',
@@ -831,12 +1075,13 @@ class ReportController extends Controller
                     'From' => $fromDate,
                     'To ' => $toDate,
                 ];
-                $queryBuilder = Punch::where('company_id',$comp_id)->with('employee');
+                $queryBuilder = Employee::where(['company_id',$comp_id])->whereBetween([['branch_id',$branches],['dept_id',$departments]])->with('punches');
                 //dd($queryBuilder);
+                dd($queryBuilder->toSql());
                 $columns = [
                     'Emp Code' => 'emp_id',
                     'Name' =>function($result){
-                        return $result->employee['name'];
+                        return 'name';
                     },
                     'Late IN'=>function($result){
                         if($result->late_in >0 && $result->late_in !=null)

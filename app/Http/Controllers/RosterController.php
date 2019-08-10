@@ -115,7 +115,7 @@ class RosterController extends Controller
     public function viewStudentRoster(Request $request){
         $institution_id = Session::get('company_id');
         $grades = Student_Grade::where('institution_id',$institution_id)->get();
-        $sectionss = Student_Section::where('institution_id',$institution_id)->get();
+        $sections = Student_Section::where('institution_id',$institution_id)->get();
         $branch_id = $request->input('selectedBranchView');
         $employee_id = $request->input('selectedEmployeeView');
         
