@@ -420,8 +420,22 @@ class ReportController extends Controller
 
                         return $absent_days;
                     },
-                    'W/Off' =>'',
-                    'P/HOL' =>'',
+                    'W/Off' =>function($result){
+                        $weekly_off_days = 0;
+                        foreach($result->rosters as $roster){
+                            if($roster['is_holiday']=="O")
+                                $weekly_off_days++;
+                        }
+                        return $weekly_off_days;
+                    },
+                    'P/HOL' =>function($result){
+                        $holidays = 0;
+                        foreach($result->rosters as $roster){
+                            if($roster['is_holiday']=="H")
+                                $holidays++;
+                        }
+                        return $holidays;
+                    },
                     'Comp' =>'',
                     'PL' =>'',
                     'OD' =>'',
