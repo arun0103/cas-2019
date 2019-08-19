@@ -256,6 +256,7 @@ Route::get('/admin/rosters/view', 'RosterController@rosters')->name('rosters');
 Route::post('/generateRoster', 'RosterController@generate');
 Route::post('/viewRoster', 'RosterController@view');
 Route::get('/viewStudentRoster', 'RosterController@viewStudentRoster')->name('viewStudentRoster');
+Route::post('/generateStudentRoster', 'RosterController@generateStudentRoster');
 
 Route::get('/getRosterData/{id}','RosterController@getRosterData');
 Route::put('/updateRoster','RosterController@updateRoster');

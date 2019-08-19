@@ -40,31 +40,31 @@
     <button class="btn btn-primary" id="btn_view">View</button>
 
     <div class="modal fade" id="modal-generate">
-        <form id="form_generateRoaster" class="form-horizontal" method="post" action="/generateRoster" autocomplete="off">
+        <form id="form_generateRoaster" class="form-horizontal" method="post" action="/generateStudentRoster" autocomplete="off">
             {{ csrf_field() }}
             <div class="modal-dialog modal-lg" >
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modal-title">Generate Roster</h4>
+                        <h4 class="modal-title" id="modal-title">Generate Students' Roster</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="row roundPadding20" id="generateRoster"> 
+                        <div class="row roundPadding20" id="generateStudentRoster"> 
                             <div class="col-sm-12">
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group" >
                                             <div class="row">
                                                 <div class="col-sm-12">
-                                                    <label>Branch <span class="required">*</span></label>
-                                                    <select id="select_branch" class="form-control select2 percent100" multiple data-placeholder="Select Branches for generating roaster" name="selectedBranches[]" required>
-                                                        @foreach($allBranches as $branch)
-                                                            <option value="{{$branch->branch_id}}">{{$branch->name}}</option>
+                                                    <label>Grade <span class="required">*</span></label>
+                                                    <select id="select_grade" class="form-control select2 percent100" multiple data-placeholder="Select Gradees for generating roaster" name="selectedGrades[]" required>
+                                                        @foreach($allGrades as $grade)
+                                                            <option value="{{$grade->grade_id}}">{{$grade->name}}</option>
                                                         @endforeach
                                                     </select>
-                                                    <span id="error_branch_generate" class="no-error">Required!</span>
+                                                    <span id="error_grade_generate" class="no-error">Required!</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -117,12 +117,12 @@
     </div>
 
     <div class="modal fade" id="modal-view">
-        <form id="form_viewRoster" class="form-horizontal" method="post" action="/viewRoster">
+        <form id="form_viewRoster" class="form-horizontal" method="post" action="/viewStudentRoster">
             {{ csrf_field() }}
             <div class="modal-dialog modal-lg" >
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modal-title">View Roster Of Employee</h4>
+                        <h4 class="modal-title" id="modal-title">View Roster Of Student</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -135,29 +135,29 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group" >
-                                                    <label for="select_branch_view">Branch <span class="required">*</span></label>
+                                                    <label for="select_grade_view">Grade <span class="required">*</span></label>
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <select id="select_branch_view" class="form-control select2 percent100"  data-placeholder="Select a Branch" name="selectedBranchView" onchange="populateEmployee(this.value)">
+                                                            <select id="select_grade_view" class="form-control select2 percent100"  data-placeholder="Select a Grade" name="selectedGradeView" onchange="populateEmployee(this.value)">
                                                                 <option></option>
-                                                                @foreach($allBranches as $branch)
-                                                                    <option value="{{$branch->branch_id}}">{{$branch->name}}</option>
+                                                                @foreach($allGrades as $grade)
+                                                                    <option value="{{$grade->grade_id}}">{{$grade->name}}</option>
                                                                 @endforeach
                                                             </select>
-                                                            <span id="error_branch_view" class="no-error">Required!</span>
+                                                            <span id="error_grade_view" class="no-error">Required!</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group" >
-                                                    <label for="select_employee_view">Employee <span class="required">*</span></label>
+                                                    <label for="select_student_view">Student <span class="required">*</span></label>
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <select id="select_employee_view" class="form-control select2 percent100"  data-placeholder="Select an Employee" name="selectedEmployeeView">
+                                                            <select id="select_student_view" class="form-control select2 percent100"  data-placeholder="Select a Student" name="selectedStudentView">
                                                                 <option></option>
                                                             </select>
-                                                            <span id="error_employee_view" class="no-error">Required!</span>
+                                                            <span id="error_student_view" class="no-error">Required!</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -208,16 +208,16 @@
     @if($rosterDetail !="")
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title">Roster Detail</h3>
+                <h3 class="box-title">Students Roster Detail </h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
                 <table id="rosterDetailTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Branch</th>
-                        <th>Department</th>
-                        <th>Employee</th>
+                        <th>Grade</th>
+                        <th>Section</th>
+                        <th>Student</th>
                         <th>Date</th>
                         <th>Shift</th>
                         <th>Day Status</th>
@@ -227,26 +227,28 @@
                 </thead>
                 <tbody id="roster-list" name="roster-list">
                     @foreach($rosterDetail as $row)
-                    <tr id="roster{{$row['id']}}">
-                        <td>{{$row->branch['name']}}</td>
-                        <td>{{$row->department['name']}}</td>
-                        <td>{{$row->employee['name']}}</td>
-                        <td>{{$row->date}}</td>
-                        <td>{{$row->shift['name']}}</td>
-                        <td>{{$row->is_holiday}}</td>
-                        <td>{{$row->updated_at}}</td>
-                        <td>
-                            <button class="btn btn-warning open_modal" value="{{$row['id']}}"><i class="fa fa-edit"></i></button>
-                            <button class="btn btn-danger delete-row" value="{{$row['id']}}"><i class="fa fa-trash"></i></button>
-                        </td>
-                    </tr>
+                        @foreach($row->rosters as $roster)
+                            <tr id="roster{{$roster['id']}}">
+                                <td>{{$row->grade['name']}}</td>
+                                <td>{{$row->section['name']}}</td>
+                                <td>{{$row->name}}</td>
+                                <td>{{$roster['date']}}</td>
+                                <td>{{$row->shift['name']}}</td>
+                                <td>{{$roster['is_holiday']}}</td>
+                                <td>{{$roster->updated_at}}</td>
+                                <td>
+                                    <button class="btn btn-warning open_modal" value="{{$roster['id']}}"><i class="fa fa-edit"></i></button>
+                                    <button class="btn btn-danger delete-row" value="{{$roster['id']}}"><i class="fa fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        @endforeach
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
-                    <th>Branch</th>
-                        <th>Department</th>
-                        <th>Employee</th>
+                        <th>Grade</th>
+                        <th>Section</th>
+                        <th>Student</th>
                         <th>Date</th>
                         <th>Shift</th>
                         <th>Day Status</th>

@@ -22,6 +22,7 @@ class CreateStudentsTable extends Migration
             $table->integer('card_number');
             $table->string('grade_id');
             $table->string('section_id')->nullable();
+            $table->string('shift_id');
             $table->date('dob');
             $table->string('permanent_address',50);
             $table->string('temporary_address',50)->nullable();

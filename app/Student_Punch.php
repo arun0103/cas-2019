@@ -15,7 +15,7 @@ class Student_Punch extends Model
      * @var array
      */
     protected $fillable = [
-        'student_id','institution_id',
+        'student_id','institution_id','roster_id',
         'punch_date','punch_1','punch_2','punch_3','punch_4','punch_5','punch_6',
         'early_in','early_out','late_in','overstay',
 
@@ -24,5 +24,9 @@ class Student_Punch extends Model
 
     public function student(){
         return $this->belongsTo('App\Student', ['student_id','institution_id'], ['student_id','institution_id']);
+    }
+
+    public function roster(){
+        return $this->belongsTo('App\Student_Roster',['student_id','institution_id',['student_id','institution_id']]);
     }
 }

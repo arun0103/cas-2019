@@ -1,0 +1,4 @@
+ALTER TABLE `students` ADD `shift_id` VARCHAR(40) NULL DEFAULT NULL AFTER `section_id`;
+
+ALTER TABLE `students_rosters` CHANGE `punch_out` `punch_out` TIMESTAMP NULL;
+ALTER TABLE `students_rosters` CHANGE `punch_in` `punch_in` TIMESTAMP NULL;

@@ -16,7 +16,7 @@ class Student extends Model
      */
     protected $fillable = [
         'id',
-        'student_id','name','institution_id', 'grade_id', 'section_id','card_number',
+        'student_id','name','institution_id', 'grade_id', 'section_id','card_number','shift_id',
         'dob','gender',
         'permanent_address','temporary_address','email',
         'father_name','mother_name', 'guardian_name', 'guardian_relation',
@@ -29,6 +29,12 @@ class Student extends Model
     }
     public function section(){
         return $this->belongsTo('App\Student_Section',['section_id','institution_id'],['section_id','institution_id']);
+    }
+    public function shift(){
+        return $this->belongsTo('App\Student_Shift',['institution_id','shift_id'],['institution_id','shift_id']);
+    }
+    public function rosters(){
+        return $this->hasMany('App\Student_Roster','student_id','student_id');
     }
     
 }
