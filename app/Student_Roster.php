@@ -26,7 +26,7 @@ class Student_Roster extends Model
         return $this->belongsTo('App\Student', ['student_id','institution_id'],['student_id','institution_id']);
     }
     public function shift(){
-        return $this->belongsTo('App\Shift', ['shift_id','institution_id'],['shift_id','institution_id']);
+        return $this->belongsTo('App\Student_Shift', ['shift_id','institution_id'],['shift_id','institution_id']);
     }
     
 

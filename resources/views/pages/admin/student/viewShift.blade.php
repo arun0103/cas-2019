@@ -34,7 +34,52 @@
                         <td>{{$shift->name}}</td>
                         <td>{{$shift->start_time}}</td>
                         <td>{{$shift->end_time}}</td>
-                        <td>{{$shift->weekly_off}}</td>
+                        <td>    @php
+                                    $index =0;
+                                @endphp
+                                @if(strlen($shift->weekly_off)>1)
+                                    
+                                    @foreach(explode(',',$shift->weekly_off) as $day)
+                                        @php
+                                            switch($day){
+                                                case '0': $day = "Sunday";break;
+                                                case '1': $day = "Monday";break;
+                                                case '2': $day = "Tuesday";break;
+                                                case '3': $day = "Wednesday";break;
+                                                case '4': $day = "Thursday";break;
+                                                case '5': $day = "Friday";break;
+                                                case '6': $day = "Saturday";break;
+                                            }
+                                        @endphp
+                                        {{$day}}
+                                        @if($index +1 < strlen($shift->weekly_off)/2)
+                                            ,
+                                        @endif
+                                        @php
+                                            $index++;
+                                            
+                                        @endphp
+                                       
+                                    @endforeach
+                               
+                                @else
+                                    @php
+                                        $day = '';
+                                        switch($shift->weekly_off){
+                                            case '0': $day = "Sunday";break;
+                                            case '1': $day = "Monday";break;
+                                            case '2': $day = "Tuesday";break;
+                                            case '3': $day = "Wednesday";break;
+                                            case '4': $day = "Thursday";break;
+                                            case '5': $day = "Friday";break;
+                                            case '6': $day = "Saturday";break;
+                                        }
+                                    @endphp
+                                    {{$day}}
+                                @endif
+                            
+                            
+                        </td>
                         <td>
                             <button class="btn btn-warning open_modal" value="{{$shift->id}}"><i class="fa fa-edit"> </i></button>
                             <button class="btn btn-danger delete-row" value="{{$shift->id}}"><i class="fa fa-trash"> </i></button>
@@ -303,7 +348,17 @@
                     var weeklyOffs_name ='';
                     for(var i =0 ; i<weeklyOffs.length; i++){
                         if(i>0) weeklyOffs_name +=', ';
-                        weeklyOffs_name = weeklyOffs[i];
+                        console.log(weeklyOffs[i]);
+                        switch(weeklyOffs[i]){
+                            case '0' : weeklyOffs[i] = "Sunday"; break;
+                            case '1' : weeklyOffs[i] = "Monday"; break;
+                            case '2' : weeklyOffs[i] = "Tuesday"; break;
+                            case '3' : weeklyOffs[i] = "Wednesday"; break;
+                            case '4' : weeklyOffs[i] = "Thursday"; break;
+                            case '5' : weeklyOffs[i] = "Friday"; break;
+                            case '6' : weeklyOffs[i] = "Saturday"; break;
+                        }
+                        weeklyOffs_name += weeklyOffs[i];
                     }
                     var shift = '<tr id="shift'+data.id +'"><td>' + data.shift_id + '</td><td>'
                                                                     + data.name + '</td><td>'
