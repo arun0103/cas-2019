@@ -348,7 +348,6 @@
                     var weeklyOffs_name ='';
                     for(var i =0 ; i<weeklyOffs.length; i++){
                         if(i>0) weeklyOffs_name +=', ';
-                        console.log(weeklyOffs[i]);
                         switch(weeklyOffs[i]){
                             case '0' : weeklyOffs[i] = "Sunday"; break;
                             case '1' : weeklyOffs[i] = "Monday"; break;

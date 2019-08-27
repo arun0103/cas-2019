@@ -283,18 +283,18 @@
       'method': "GET",
       'contentType': 'application/json'
       }).done( function(data) {
-      console.log(data);
+      //console.log(data);
       if ( $.fn.dataTable.isDataTable( '#present-employees-table' ) ) {
           table = $('#present-employees-table').DataTable();
         }else{
           table = $('#present-employees-table').dataTable({
             "aaData": data,
             "columns": [
-                { "data": "employee.name" },
-                { "data": "employee.branch.name" },
-                { "data": "employee.department.name" },
-                { "data": "employee.designation.name" },
-                { "data": "punch_1" }
+                { "data": "employee.name", "defaultContent":"N/A"  },
+                { "data": "employee.branch.name", "defaultContent":"N/A"  },
+                { "data": "employee.department.name", "defaultContent":"N/A"  },
+                { "data": "employee.designation.name", "defaultContent":"N/A"  },
+                { "data": "punch_1", "defaultContent":"N/A"  }
             ]
           });
         }
@@ -321,7 +321,7 @@
       'method': "GET",
       'contentType': 'application/json'
       }).done( function(data) {
-      console.log("late employees: "+ data);
+      //console.log("late employees: "+ data);
       if ( $.fn.dataTable.isDataTable( '#late-employees-table' ) ) {
           table = $('#late-employees-table').DataTable();
         }
@@ -329,11 +329,11 @@
           table = $('#late-employees-table').dataTable({
             "aaData": data,
             "columns": [
-                { "data": "employee.name" },
-                { "data": "employee.branch.name" },
-                { "data": "employee.department.name" },
-                { "data": "employee.designation.name" },
-                { "data": "late_in" }
+                { "data": "employee.name", "defaultContent":"N/A"  },
+                { "data": "employee.branch.name", "defaultContent":"N/A"  },
+                { "data": "employee.department.name", "defaultContent":"N/A"  },
+                { "data": "employee.designation.name", "defaultContent":"N/A"  },
+                { "data": "late_in", "defaultContent":"N/A"  }
             ]
           });
         }
@@ -375,26 +375,30 @@
     // } );
     // }
     
+    //console.log("Showing Total students data");
     $.ajax({
       'url': "/getTotalStudents/",
       'method': "GET",
       'contentType': 'application/json'
       }).done( function(data) {
+        //console.log(data);
         if ( $.fn.dataTable.isDataTable( '#total-students-table' ) ) {
           table = $('#total-students-table').DataTable();
+          //console.log(data);
         }
         else {
             table = $('#total-students-table').dataTable({
                       "aaData": data,
                       "columns": [
-                          { "data": "name" },
-                          { "data": "grade.name" },
-                          { "data": "section.name" },
-                          { "data": "guardian_name" },
-                          { "data": "contact_1_number" },
-                          { "data": "contact_2_number" },
+                          { "data": "name", "defaultContent":"N/A"  },
+                          { "data": "grade.name", "defaultContent":"N/A"  },
+                          { "data": "section.name", "defaultContent":"N/A" },
+                          { "data": "guardian_name", "defaultContent":"N/A"  },
+                          { "data": "contact_1_number", "defaultContent":"N/A"  },
+                          { "data": "contact_2_number", "defaultContent":"N/A"  },
                       ]
                     });
+                    //console.log(data);
         }
       
       });
@@ -419,7 +423,7 @@
       'method': "GET",
       'contentType': 'application/json'
       }).done( function(data) {
-      console.log(data);
+      //console.log(data);
       if ( $.fn.dataTable.isDataTable( '#present-students-table' ) ) {
           table = $('#present-students-table').DataTable();
       }
@@ -427,13 +431,13 @@
           table = $('#present-students-table').DataTable({
                     "aaData": data,
                     "columns": [
-                        { "data": "student.name" },
-                        { "data": "student.grade.name" },
-                        { "data": "student.section.name" },
-                        { "data": "student.guardian_name" },
-                        { "data": "student.contact_1_number" },
-                        { "data": "student.contact_2_number" },
-                        { "data": "punch_1" },
+                        { "data": "student.name", "defaultContent":"N/A"  },
+                        { "data": "student.grade.name", "defaultContent":"N/A"  },
+                        { "data": "student.section.name", "defaultContent":"N/A"  },
+                        { "data": "student.guardian_name", "defaultContent":"N/A"  },
+                        { "data": "student.contact_1_number", "defaultContent":"N/A"  },
+                        { "data": "student.contact_2_number", "defaultContent":"N/A"  },
+                        { "data": "punch_1", "defaultContent":"N/A"  },
                     ]
                   });
         }
@@ -467,12 +471,12 @@
           table = $('#absent-students-table').dataTable({
                     "aaData": data,
                     "columns": [
-                        { "data": "name" },
-                        { "data": "grade.name" },
-                        { "data": "section.name" },
-                        { "data": "guardian_name" },
-                        { "data": "contact_1_number" },
-                        { "data": "contact_2_number" },
+                        { "data": "name", "defaultContent":"N/A"  },
+                        { "data": "grade.name", "defaultContent":"N/A"  },
+                        { "data": "section.name", "defaultContent":"N/A"  },
+                        { "data": "guardian_name", "defaultContent":"N/A"  },
+                        { "data": "contact_1_number", "defaultContent":"N/A"  },
+                        { "data": "contact_2_number", "defaultContent":"N/A"  },
                     ]
                   });
         }

@@ -1247,6 +1247,7 @@
                     dataType: 'json',
                     success: function (data) {
                         console.log(data);
+                        console.log("Employee Added/Edited");
                         var employee = '<tr id="employee'+data.orig_data.employee_id +'"><td>' +
                                             + data.orig_data.name + '</td><td>'
                                             + data.orig_data.father_name + '</td><td>' 
@@ -1258,14 +1259,17 @@
                                             + data.shift_name + '</td>' ;
                         employee += '<td><button class="btn btn-warning btn-detail open_modal" value="' + data.orig_data.employee_id + '"><i class="fa fa-edit"></i></button>';
                         employee += ' <button class="btn btn-danger btn-delete delete-row" value="' + data.orig_data.employee_id + '"><i class="fa fa-trash"></i></button></td></tr>';
-                        if (state == "add"){ //if user added a new record
+                        if (state == "add"){ //if user added a new employee
                             $('#employees-list').prepend(employee);
                             var newOption = new Option(data.orig_data.name +' ['+data.designation_name+']', data.orig_data.employee_id, false, false);
                             $('.reporting_officers').append(newOption).trigger('change');
+                            console.log("Added Confirmed!");
                         }else{ //if user updated an existing record
                             $("#employee" + original_employee_id).replaceWith( employee );
+                            console.log("Edited Confirmed!");
                         }
                         $('#form_addEmployee').trigger("reset");
+                        console.log("hiding modal add..");
                         $('#modal-add').modal('hide');
                     },
                     error: function (data) {

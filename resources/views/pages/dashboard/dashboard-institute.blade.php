@@ -140,7 +140,7 @@
   });
   function refreshPageContents() { 
     //location.reload(); 
-    //console.log('Reloading page contents');
+    console.log('Reloading page contents');
     $.get('/refreshDashboard/Institute',function(data){
       //console.log(data);
       $('#employee-total').text(data.employee['total']).change();
