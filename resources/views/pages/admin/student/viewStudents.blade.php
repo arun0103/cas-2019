@@ -123,19 +123,19 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="inputStudentId" class="control-label">Student ID</label>
+                                    <label for="inputStudentId" class="control-label">Student ID <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="inputStudentId" placeholder="Student ID" name="student_id">
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="inputStudentCardNumber" class="control-label">Card Number</label>
+                                    <label for="inputStudentCardNumber" class="control-label">Card Number <span class="required">*</span></label>
                                     <input type="number" class="form-control" id="inputStudentCardNumber" placeholder="Card Number" name="student_CardNumber">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="inputName" class="control-label">Student's Name</label>
+                                    <label for="inputName" class="control-label">Student's Name <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="inputName" placeholder="Full name of student" name="student_name">
                                 </div>
                             </div>
@@ -144,7 +144,7 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="datepicker_DOB" class="control-label">D.O.B</label>
+                                    <label for="datepicker_DOB" class="control-label">D.O.B <span class="required">*</span></label>
                                     <div class="input-group date">
                                         <div class="input-group-addon left-addon">
                                             <input type="text" class="form-control pull-right" id="datepicker_DOB" autocomplete="off">
@@ -153,9 +153,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label class="control-label">Gender</label>
+                                    <label class="control-label">Gender <span class="required">*</span></label>
                                     <div>
                                         <label for="radio_male" style="font-weight:normal">Male
                                             <input type="radio" id="radio_male" name="gender" value="1" class="flat-red">
@@ -166,9 +166,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="select_grade" class="control-label">Grade</label>
+                                    <label for="select_shift" class="control-label">Shift <span class="required">*</span></label>
+                                    <select id="select_shift" class="form-control select2 percent100" data-placeholder="Select Shift" name="selectedShift" required>
+                                        <option></option>
+                                        @foreach($shifts as $shift)
+                                            <option value="{{$shift->shift_id}}">{{$shift->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="select_grade" class="control-label">Grade <span class="required">*</span></label>
                                     <select id="select_grade" class="form-control select2 percent100" data-placeholder="Select Grade" name="selectedGrade" onchange="populateSections(this.value)" required>
                                         <option></option>
                                         @foreach($grades as $grade)
@@ -177,9 +188,9 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="select_section" class="control-label">Section</label>
+                                    <label for="select_section" class="control-label">Section <span class="required">*</span></label>
                                     <select id="select_section" class="form-control select2 percent100" data-placeholder="Select Section" name="selectedSection" >
                                         <option></option>
                                     </select>
@@ -190,7 +201,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="textarea_permanent_address" class="control-label">Permanent Address</label>
+                                    <label for="textarea_permanent_address" class="control-label">Permanent Address <span class="required">*</span></label>
                                     <textarea id="textarea_permanent_address" class="form-control" placeholder="Provide complete address"></textarea>
                                 </div>
                             </div>
@@ -205,13 +216,13 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="inputFatherName" class="control-label">Father's Name</label>
+                                    <label for="inputFatherName" class="control-label">Father's Name <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="inputFatherName" placeholder="Father's Name" name="student_father_name">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="inputMotherName" class="control-label">Mother's Name</label>
+                                    <label for="inputMotherName" class="control-label">Mother's Name <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="inputMotherName" placeholder="Mother's Name" name="student_mother_name">
                                 </div>
                             </div>
@@ -351,6 +362,7 @@
                 $('#inputStudentId').val(data.student_id);
                 $('#inputName').val(data.name);
                 $('#select_grade').val(data.grade_id).trigger('change');
+                $('#select_shift').val(data.shift_id).trigger('change');
                 $('#select_section').val(data.section_id).change();
                 $('#inputStudentCardNumber').val(data.card_number);
                 $('#datepicker_DOB').val(data.dob);
@@ -420,6 +432,7 @@
             var formData = {
                 institution_id      : $('#inputInstitutionId').val(),
                 student_id          : $('#inputStudentId').val(),
+                shift_id            : $('#select_shift').val(),
                 grade_id            : $('#select_grade').val(),
                 section_id          : $('#select_section').val(),
                 name                : $('#inputName').val(), 

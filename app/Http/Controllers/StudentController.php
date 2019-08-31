@@ -8,6 +8,7 @@ use Session;
 use Carbon\Carbon;
 
 use App\Student;
+use App\Student_Shift;
 use App\Student_Grade;
 use App\Student_Section;
 
@@ -17,8 +18,9 @@ class StudentController extends Controller
         $institution_id = Session::get('company_id');
         $students = Student::where('institution_id',$institution_id)->with('grade','section')->get();
         $grades = Student_Grade::where('institution_id',$institution_id)->get();
+        $shifts = Student_Shift::where('institution_id',$institution_id)->get();
         
-        return view('pages/admin/student/viewStudents',['students'=>$students, 'grades'=>$grades]);
+        return view('pages/admin/student/viewStudents',['students'=>$students, 'grades'=>$grades, 'shifts'=>$shifts]);
     }
     public function getStudentById($id){
         $find = Student::where('id',$id)->with('grade','section')->first();
@@ -38,6 +40,7 @@ class StudentController extends Controller
         $update = Student::where('id',$id)->first();
         $update->student_id = $req->student_id;
         $update->name = $req->name ;
+        $update->shift_id = $req->shift_id ;
         $update->grade_id = $req->grade_id ;
         $update->section_id = $req->section_id ;
         $update->card_number = $req->card_number ;

@@ -196,7 +196,12 @@ class RosterController extends Controller
             return Redirect::back()->with('failMessage','No Roster found !');
         }
     }
-    public function viewStudentRoster(Request $request){
+    public function viewStudentRoster(Request $request, $selectedMonth){
+        $month = $selectedMonth;
+        $year = Carbon::now()->year;
+        $fromDate = $year.'/'.($month<10?'0'.$month:$month).'/01';
+        $toDate = $year.'/'.($month<10?'0'.$month:$month).'/31';
+        //dd($fromDate);
         $institution_id = Session::get('company_id');
         $grades = Student_Grade::where('institution_id',$institution_id)->get();
         $sections = Student_Section::where('institution_id',$institution_id)->get();
@@ -211,7 +216,11 @@ class RosterController extends Controller
         //                                 ->get();
 
         $studentRosterDetail = Student::where('institution_id',$institution_id)
-                                    ->with('rosters','shift','grade','section')->get();
+                                    ->with('shift','grade','section')
+                                    ->with(['rosters'=> function($query) use($fromDate, $toDate){
+                                        $query->whereBetween('date',[$fromDate, $toDate]);
+                                    }])
+                                    ->get();
         //dd($studentRosterDetail[0]);
         if($studentRosterDetail != null){
             return view('pages/admin/roster/student_roster',['allGrades'=>$grades,'sections'=>$sections, 'shifts'=>$shifts, 'rosterDetail'=>$studentRosterDetail]);

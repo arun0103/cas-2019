@@ -138,7 +138,7 @@
                                                     <label for="select_grade_view">Grade <span class="required">*</span></label>
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <select id="select_grade_view" class="form-control select2 percent100"  data-placeholder="Select a Grade" name="selectedGradeView" onchange="populateEmployee(this.value)">
+                                                            <select id="select_grade_view" class="form-control select2 percent100"  data-placeholder="Select a Grade" name="selectedGradeView" onchange="populateStudent(this.value)">
                                                                 <option></option>
                                                                 @foreach($allGrades as $grade)
                                                                     <option value="{{$grade->grade_id}}">{{$grade->name}}</option>
@@ -410,14 +410,14 @@
             }
         });
 
-        function populateEmployee(branch){
-            if($('#select_branch_view').val()!="" && $('#select_branch_view').val()!= null){
-                $.get("/employees/branch/"+branch, function(data){
-                    $("#select_employee_view").empty();
-                    $('#select_employee_view').append('<option></option>');
+        function populateStudent(grade){
+            if($('#select_grade_view').val()!="" && $('#select_grade_view').val()!= null){
+                $.get("/students/grade/"+grade, function(data){
+                    $("#select_student_view").empty();
+                    $('#select_student_view').append('<option></option>');
                     for(var i=0;i<data.length;i++){
-                        var newEmployee = $('<option value="'+data[i].employee_id+'">'+data[i].name+'</option>');
-                        $('#select_employee_view').append(newEmployee).trigger('change');
+                        var newStudent = $('<option value="'+data[i].student_id+'">'+data[i].name+'</option>');
+                        $('#select_student_view').append(newStudent).trigger('change');
                     }
                     $('.select2').select2();
                 });

@@ -251,11 +251,10 @@ Route::post('/addHoliday','HolidayController@addHoliday');
 Route::delete('/deleteHoliday/{id}','HolidayController@deleteHoliday');
 
 /////////////////////////////////////////////////////////////////////////
-//////////// Roasters
+//////////// Rosters
 Route::get('/admin/rosters/view', 'RosterController@rosters')->name('rosters');
 Route::post('/generateRoster', 'RosterController@generate');
 Route::post('/viewRoster', 'RosterController@view');
-Route::get('/viewStudentRoster', 'RosterController@viewStudentRoster')->name('viewStudentRoster');
 Route::post('/generateStudentRoster', 'RosterController@generateStudentRoster');
 
 Route::get('/getRosterData/{id}','RosterController@getRosterData');
@@ -266,6 +265,9 @@ Route::put('/updateRosterDetails', 'RosterController@updateRosterDetails');
 
 Route::get('/getRosterDetails/{branch_id}/{employee_id}/{date}', 'AdminController@getRosterDetails');
 
+Route::get('/viewStudentRoster/{month}', 'RosterController@viewStudentRoster')->name('viewStudentRoster');
+
+//Route::get('/students/grade', )
 
 ////////////////////////////////////////////////////////////////////////
 ///////////// Manual Entry (punch)
