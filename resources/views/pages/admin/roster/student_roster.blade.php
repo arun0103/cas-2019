@@ -117,7 +117,7 @@
     </div>
 
     <div class="modal fade" id="modal-view">
-        <form id="form_viewRoster" class="form-horizontal" method="post" action="/viewStudentRoster">
+        <form id="form_viewRoster" class="form-horizontal" method="post" action="/studentRoster">
             {{ csrf_field() }}
             <div class="modal-dialog modal-lg" >
                 <div class="modal-content">
@@ -263,14 +263,14 @@
     @endif
 
     <div class="modal fade" id="modal-editRoster">
-        <form id="form_editRoster" class="form-horizontal" method="POST" action="/updateRoster">
+        <form id="form_editRoster" class="form-horizontal" method="POST" action="/updateStudentRoster">
             <input type="hidden" id="roster_id" name="roster_id">
             {{ csrf_field() }}
             {{ method_field('PUT')}}
             <div class="modal-dialog modal-lg" >
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modal-title">Edit Roster Of Employee</h4>
+                        <h4 class="modal-title" id="modal-title">Edit Roster Of Student</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -279,19 +279,27 @@
                         <div class="row roundPadding20" id="editRoster"> 
                             <div class="col-sm-12">
                                 <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-6">
                                         <div class="form-group" >
-                                            <label for="select_branch_edit" class="control-label">Branch <span class="required">*</span></label>
-                                            <input type="text" id="branch_edit" class="form-control" disabled>
+                                            <label for="select_grade_edit" class="control-label">Grade <span class="required">*</span></label>
+                                            <input type="text" id="grade_edit" class="form-control" disabled>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-6">
+                                        <div class="form-group" >
+                                            <label for="select_section_edit" class="control-label">Section <span class="required">*</span></label>
+                                            <input type="text" id="section_edit" class="form-control" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="select_employee_view" class="control-label">Employee <span class="required">*</span></label>
-                                            <input type="text" id="employee_edit" class="form-control" disabled>
+                                            <label for="select_student_view" class="control-label">Student <span class="required">*</span></label>
+                                            <input type="text" id="student_edit" class="form-control" disabled>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="roster_date" class="control-label">Date <span class="required">*</span></label>
                                             <input type="text" id="roster_date" class="form-control" disabled>
@@ -312,7 +320,7 @@
                                         <label for="select_dayStatus" class="control-label">Day Status <span class="required">*</span></label>
                                         <select id="select_dayStatus" class="form-control select2 percent100"  data-placeholder="Select Day Status" name="selectedDayStatus">
                                             <option></option>
-                                            <option value = "W">Work</option>
+                                            <option value = "C">Class</option>
                                             <option value = "H">Holiday</option>
                                             <option value = "O">Weekly Off</option>
                                         </select>
@@ -411,6 +419,7 @@
         });
 
         function populateStudent(grade){
+            //console.log("View");
             if($('#select_grade_view').val()!="" && $('#select_grade_view').val()!= null){
                 $.get("/students/grade/"+grade, function(data){
                     $("#select_student_view").empty();
@@ -420,8 +429,10 @@
                         $('#select_student_view').append(newStudent).trigger('change');
                     }
                     $('.select2').select2();
+                    //console.log(data.length);
                 });
             }
+            
         }
 
         //delete roster and remove it from list
@@ -435,7 +446,7 @@
                 });
                 $.ajax({
                     type: "DELETE",
-                    url: '/deleteRoster/' + id,
+                    url: '/deleteStudentRoster/' + id,
                     success: function (data) {
                         $("#roster" + id).remove();
                     },
@@ -449,10 +460,13 @@
 
         $(document).on('click','.open_modal',function(){
             var id = $(this).val();
-            $.get('/getRosterData/'+id, function(data){
+            console.log("Clicked on edit1");
+            $.get('/getStudentRosterData/'+id, function(data){
+                console.log(data);
                 $('#roster_id').val(id);
-                $('#branch_edit').val(data.branch.name);
-                $('#employee_edit').val(data.employee.name);
+                $('#grade_edit').val(data.student.grade.name);
+                $('#section_edit').val(data.student.section!=null?data.student.section.name:"");
+                $('#student_edit').val(data.student.name);
                 $('#roster_date').val(data.date);
                 $('#select_shift').val(data.shift_id).trigger('change');
                 $('#select_dayStatus').val(data.is_holiday).trigger('change');
@@ -475,17 +489,17 @@
             });
             $.ajax({
                 type: 'PUT',
-                url: '/updateRoster',
+                url: '/updateStudentRoster',
                 data: formData,
                 dataType: 'json',
                 success: function (data) {
                     $('#modal-editRoster').modal('hide');
-                    var branch_name = data.branch!=null ? data.branch['name'] : "";
-                    var department_name = data.department!=null ? data.department['name']: "";
+                    var grade_name = data.student.grade!=null ? data.student.grade['name'] : "";
+                    var section_name = data.student.section!=null ? data.student.section['name']: "";
                     var rowUpdated = '<tr id="#roster"'+data.id+'>'+
-                                        '<td>'+ branch_name +'</td>' +
-                                        '<td>'+ department_name +'</td>' +
-                                        '<td>'+ data.employee['name'] +'</td>'+
+                                        '<td>'+ grade_name +'</td>' +
+                                        '<td>'+ section_name +'</td>' +
+                                        '<td>'+ data.student['name'] +'</td>'+
                                         '<td>'+ data.date +'</td>'+
                                         '<td>'+ data.shift['name'] +'</td>'+
                                         '<td>'+ data.is_holiday +'</td>'+
@@ -549,17 +563,17 @@
         });
         function validate_view(){
             var validated = true;
-            if($('#select_branch_view').val().length <1 ){
+            if($('#select_grade_view').val().length <1 ){
                 validated = false;
-                $('#error_branch_view').removeClass('no-error').addClass('error');
+                $('#error_grade_view').removeClass('no-error').addClass('error');
             }else{
-                $('#error_branch_view').removeClass('error').addClass('no-error');
+                $('#error_grade_view').removeClass('error').addClass('no-error');
             }
-            if($('#select_employee_view').val() ==""){
+            if($('#select_student_view').val() ==""){
                 validated = false;
-                $('#error_employee_view').removeClass('no-error').addClass('error');
+                $('#error_student_view').removeClass('no-error').addClass('error');
             }else{
-                $('#error_employee_view').removeClass('error').addClass('no-error');
+                $('#error_student_view').removeClass('error').addClass('no-error');
             }
             if($('#datepicker_date').val() ==[]){
                 validated = false;

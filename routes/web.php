@@ -257,15 +257,20 @@ Route::post('/generateRoster', 'RosterController@generate');
 Route::post('/viewRoster', 'RosterController@view');
 Route::post('/generateStudentRoster', 'RosterController@generateStudentRoster');
 
-Route::get('/getRosterData/{id}','RosterController@getRosterData');
-Route::put('/updateRoster','RosterController@updateRoster');
-Route::delete('/deleteRoster/{id}','RosterController@deleteRoster');
+Route::get('/getRosterData/{id}','RosterController@getRosterData'); // Employee
+Route::get('/getStudentRosterData/{id}','RosterController@getStudentRosterData');// Student
+Route::put('/updateRoster','RosterController@updateRoster'); //Employee
+Route::put('/updateStudentRoster','RosterController@updateStudentRoster'); //Student
+Route::delete('/deleteRoster/{id}','RosterController@deleteRoster'); //Employee
+Route::delete('/deleteStudentRoster/{id}','RosterController@deleteStudentRoster'); //Student
 
 Route::put('/updateRosterDetails', 'RosterController@updateRosterDetails');
 
 Route::get('/getRosterDetails/{branch_id}/{employee_id}/{date}', 'AdminController@getRosterDetails');
 
 Route::get('/viewStudentRoster/{month}', 'RosterController@viewStudentRoster')->name('viewStudentRoster');
+Route::get('/students/grade/{grade}', 'StudentController@getStudentsOfGrade');
+Route::get('/studentRoster','RosterController@viewStudentRosterOfDay');
 
 //Route::get('/students/grade', )
 

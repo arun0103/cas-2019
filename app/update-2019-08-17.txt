@@ -2,3 +2,5 @@ ALTER TABLE `students` ADD `shift_id` VARCHAR(40) NULL DEFAULT NULL AFTER `secti
 
 ALTER TABLE `students_rosters` CHANGE `punch_out` `punch_out` TIMESTAMP NULL;
 ALTER TABLE `students_rosters` CHANGE `punch_in` `punch_in` TIMESTAMP NULL;
+
+ALTER TABLE `rosters` ADD `punch_id` INT(10) NOT NULL AFTER `final_half_2`;

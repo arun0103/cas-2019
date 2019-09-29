@@ -233,6 +233,12 @@ class RosterController extends Controller
         $data = Roster::where('id',$id)->with('branch','shift','employee')->first();
         return response()->json($data);
     }
+    public function getStudentRosterData($id){
+        $data = Student_Roster::where('id',$id)->with('shift')->with(['student' =>function($query){
+                $query->with('grade','section')->get();
+                }])->first();
+        return response()->json($data);
+    }
     public function updateRoster(Request $req){
         $rosterToUpdate = Roster::where('id',$req->id)->first();
         $rosterToUpdate->shift_id = $req->shift;
@@ -243,9 +249,27 @@ class RosterController extends Controller
         
         return response()->json($updatedRoster);
     }
+    public function updateStudentRoster(Request $req){
+        $rosterToUpdate = Student_Roster::where('id',$req->id)->first();
+        $rosterToUpdate->shift_id = $req->shift;
+        $rosterToUpdate->is_holiday = $req->dayStatus;
+        $rosterToUpdate->updated_at = Carbon::now();
+        $rosterToUpdate->save();
+        $updatedRoster = Student_Roster::where('id',$req->id)->with('shift')
+            ->with(['student' =>function($query){
+                $query->with('grade','section')->get();
+                }])->first();
+        
+        return response()->json($updatedRoster);
+    }
 
     public function deleteRoster($id){
         $roster = Roster::where('id',$id)->delete();
+        return response()->json($roster);
+    }
+
+    public function deleteStudentRoster($id){
+        $roster = Student_Roster::where('id',$id)->delete();
         return response()->json($roster);
     }
 
@@ -256,5 +280,8 @@ class RosterController extends Controller
         $rosterToUpdate->is_holiday = $req->status;
         $rosterToUpdate->save();
         return response()->json($rosterToUpdate);
+    }
+    public function viewStudentRosterOfDay(Request $req){
+
     }
 }

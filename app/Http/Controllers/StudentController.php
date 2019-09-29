@@ -144,4 +144,10 @@ class StudentController extends Controller
         return $sections;
     }
     /**********************************************************************************************************/
+
+    public function getStudentsOfGrade($grade_id){
+        $institution_id = Session::get('company_id');
+        $studentsOfGrade = Student::where([['institution_id',$institution_id],['grade_id',$grade_id]])->get();
+        return $studentsOfGrade;
+    }
 }

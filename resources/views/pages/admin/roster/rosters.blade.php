@@ -409,6 +409,7 @@
         });
 
         function populateEmployee(branch){
+            console.log("Gathering employee details");
             if($('#select_branch_view').val()!="" && $('#select_branch_view').val()!= null){
                 $.get("/employees/branch/"+branch, function(data){
                     $("#select_employee_view").empty();
