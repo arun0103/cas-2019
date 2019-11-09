@@ -164,14 +164,14 @@ class EmployeeController extends Controller
         
         if($request->email != null){
             $user = User::create([
-                'company_id'    =>$new->company_id,
-                'employee_id'   =>$request->employee_id,
-                'name'          =>$new->name,
-                'email'         =>$new->email,
-                'role'          =>'employee',
-                'password'      =>bcrypt('test@123'),
-                'added_by'      =>Session::get('user_id'),
-                'password_changed'=>0
+                'company_id'    => $new->company_id,
+                'employee_id'   => $request->employee_id,
+                'name'          => $new->name,
+                'email'         => $new->email,
+                'role'          => 'employee',
+                'password'      => bcrypt('test@123'),
+                'added_by'      => Session::get('user_id'),
+                'password_changed'=> 0
             ]);
             $user->save();
         }

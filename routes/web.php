@@ -13,6 +13,7 @@
 Route::get('/', function () {
     return view('welcome');
 })->name('main');
+
 Route::get('/admin/dashboard', function () {
     return view('pages/admin/dashboard');
 });

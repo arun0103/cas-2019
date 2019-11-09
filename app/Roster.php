@@ -15,7 +15,7 @@ class Roster extends Model
      * @var array
      */
     protected $fillable = [
-        'company_id','branch_id','employee_id', 'department_id','shift_id',
+        'company_id','branch_id','employee_id', 'department_id','shift_id','punch_id',
         'date','is_holiday',
         'final_half_1','final_half_2',
         

@@ -117,7 +117,7 @@
     </div>
 
     <div class="modal fade" id="modal-view">
-        <form id="form_viewRoster" class="form-horizontal" method="post" action="/studentRoster">
+        <form id="form_viewRoster" class="form-horizontal" method="get" action="/studentRoster">
             {{ csrf_field() }}
             <div class="modal-dialog modal-lg" >
                 <div class="modal-content">
@@ -215,42 +215,59 @@
                 <table id="rosterDetailTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
+                        <th>Student</th>
                         <th>Grade</th>
                         <th>Section</th>
-                        <th>Student</th>
-                        <th>Date</th>
                         <th>Shift</th>
+                        <th>Date</th>
                         <th>Day Status</th>
                         <th>Updated At</th>
                         <th>Actions</th>
+                        
                     </tr>
                 </thead>
                 <tbody id="roster-list" name="roster-list">
                     @foreach($rosterDetail as $row)
+                    @php
+                        $row_index = 0;
+                    @endphp
                         @foreach($row->rosters as $roster)
-                            <tr id="roster{{$roster['id']}}">
+                    
+                            <tr id="roster_{{$row->id}}_{{$roster->id}}">
+                                <td>{{$row->name}}</td>
                                 <td>{{$row->grade['name']}}</td>
                                 <td>{{$row->section['name']}}</td>
-                                <td>{{$row->name}}</td>
-                                <td>{{$roster['date']}}</td>
                                 <td>{{$row->shift['name']}}</td>
-                                <td>{{$roster['is_holiday']}}</td>
-                                <td>{{$roster->updated_at}}</td>
-                                <td>
-                                    <button class="btn btn-warning open_modal" value="{{$roster['id']}}"><i class="fa fa-edit"></i></button>
-                                    <button class="btn btn-danger delete-row" value="{{$roster['id']}}"><i class="fa fa-trash"></i></button>
-                                </td>
+                                
+                                    @if(count($row->rosters) < 1)
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    @else
+                                        <td>{{$roster['date']}}</td>
+                                        <td>{{$roster['is_holiday']}}</td>
+                                        <td>{{$roster->updated_at}}</td>
+                                        <td>
+                                            <button class="btn btn-warning open_modal" value="{{$roster['id']}}"><i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-danger delete-row" value="{{$roster['id']}}"><i class="fa fa-trash"></i></button>
+                                        </td>
+                                    @endif
+                                
                             </tr>
+                            @php
+                                $row_index++;
+                            @endphp
                         @endforeach
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
+                        <th>Student</th>
                         <th>Grade</th>
                         <th>Section</th>
-                        <th>Student</th>
-                        <th>Date</th>
                         <th>Shift</th>
+                        <th>Date</th>
                         <th>Day Status</th>
                         <th>Updated At</th>
                         <th>Actions</th>
@@ -460,7 +477,7 @@
 
         $(document).on('click','.open_modal',function(){
             var id = $(this).val();
-            console.log("Clicked on edit1");
+            
             $.get('/getStudentRosterData/'+id, function(data){
                 console.log(data);
                 $('#roster_id').val(id);
@@ -493,10 +510,11 @@
                 data: formData,
                 dataType: 'json',
                 success: function (data) {
+                    //console.log(data);
                     $('#modal-editRoster').modal('hide');
                     var grade_name = data.student.grade!=null ? data.student.grade['name'] : "";
                     var section_name = data.student.section!=null ? data.student.section['name']: "";
-                    var rowUpdated = '<tr id="#roster"'+data.id+'>'+
+                    var rowUpdated = '<tr id="roster'+data.id+'">'+
                                         '<td>'+ grade_name +'</td>' +
                                         '<td>'+ section_name +'</td>' +
                                         '<td>'+ data.student['name'] +'</td>'+

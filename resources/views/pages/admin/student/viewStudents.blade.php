@@ -418,7 +418,7 @@
                 });
             }
         });
-        //create new product / update existing product
+        //create new student / update existing student
         $("#btn_confirm").click(function (e) {
             var type = "POST"; //for creating new resource
             var student_id = $('#inputStudentId').val();
@@ -468,6 +468,7 @@
                 data: formData,
                 dataType: 'json',
                 success: function (data) {
+                    console.log('Success');
                     var current_address = "";
                     if(data.temporary_address != null){
                         current_address = data.temporary_address;

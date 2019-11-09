@@ -173,7 +173,7 @@
   });
   function refreshPageContents() { 
     $.get('/refreshDashboard/Institute',function(data){
-      
+      console.log('Refreshing dashboard');
       $('#employee-total').text(data.employee['total']).change();
       $('#employee-present').text(data.employee['present']).change();
       $('#employee-absent').text(data.employee['total'] - data.employee['present']).change();

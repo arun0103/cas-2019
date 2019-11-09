@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Session;
 use Carbon\Carbon;
 
+use App\User;
 use App\Student;
 use App\Student_Shift;
 use App\Student_Grade;
@@ -29,6 +30,20 @@ class StudentController extends Controller
     public function addStudent(Request $req){
         $new = Student::create($req->input());
         $dataToSend = Student::where('id',$new->id)->with('grade','section')->first();
+
+        if($req->email != null){
+            $user = User::create([
+                'company_id'    => $new->institution_id,
+                'employee_id'   => $req->student_id,
+                'name'          => $new->name,
+                'email'         => $new->email,
+                'role'          => 'student',
+                'password'      => bcrypt('test@123'),
+                'added_by'      => Session::get('user_id'),
+                'password_changed'=> 0
+            ]);
+            $user->save();
+        }
         return response()->json($dataToSend);
     }
     public function deleteStudent($id){
@@ -38,6 +53,10 @@ class StudentController extends Controller
     }
     public function updateStudent(Request $req, $id){
         $update = Student::where('id',$id)->first();
+
+        $check_user_exists = User::where('employee_id',$update->student_id)->first();
+
+    
         $update->student_id = $req->student_id;
         $update->name = $req->name ;
         $update->shift_id = $req->shift_id ;
@@ -61,6 +80,25 @@ class StudentController extends Controller
         $update->updated_at = Carbon::now();
 
         $update->save();
+        if($check_user_exists != null){ // User Exists .. update
+            if($check_user_exists->email != $update->email){
+                $check_user_exists->email = $update->email;
+                $check_user_exists->save();
+            }
+        }else {
+            $user = User::create([
+                'company_id'    => Session::get('company_id'),
+                'employee_id'   => $update->student_id,
+                'name'          => $update->name,
+                'email'         => $update->email,
+                'role'          => 'student',
+                'password'      => bcrypt('test@123'),
+                'added_by'      => Session::get('user_id'),
+                'password_changed'=> 0
+            ]);
+            $user->save();
+        }
+        
         return response()->json($update);
         
     }

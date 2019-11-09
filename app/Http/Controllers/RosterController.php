@@ -25,10 +25,21 @@ class RosterController extends Controller
 {
     public function rosters(){
         $company_id = Session::get('company_id');
+        $employee_id = Session::get('user_id');
+        //dd($employee_id);
         $branches = Branch::where('company_id',$company_id)->get();
-        $rosterDetail = Roster::where('company_id',$company_id)->with('branch','department','shift','employee')->get();
+        $rosterDetail = Roster::where('company_id',$company_id)
+                            ->with(['branch'=>function($query){
+                                $query->pluck('name')->all();
+                            }])->with(['department'=>function($query){
+                                $query->pluck('name')->all();
+                            }])->with(['shift'=>function($query){
+                                $query->pluck('name')->all();
+                            }])->with(['employee'=>function($query){
+                                $query->pluck('name')->all();
+                            }])->get();
         $shifts = Shift::where('company_id',$company_id)->get();
-        //dd($rosterDetail);
+        //dd($rosterDetail[0]);
         return view('pages/admin/roster/rosters',['allBranches'=>$branches, 'shifts'=>$shifts, 'rosterDetail'=>$rosterDetail]);
     }
     public function generate(Request $request){
@@ -92,7 +103,8 @@ class RosterController extends Controller
                             'date'=>$date,
                             'is_holiday'=>$day_status,
                             'final_half_1'=>"AB",
-                            'final_half_2'=>"AB"
+                            'final_half_2'=>"AB",
+                            'punch_id'=>-1,
                         ]);
                         $roster->save();
                     }
@@ -234,8 +246,11 @@ class RosterController extends Controller
         return response()->json($data);
     }
     public function getStudentRosterData($id){
-        $data = Student_Roster::where('id',$id)->with('shift')->with(['student' =>function($query){
-                $query->with('grade','section')->get();
+        $data = Student_Roster::where('id',$id)->with(['shift'=>function($query){
+                    $query->get('name');
+                }])
+                ->with(['student' =>function($query){
+                $query->with('grade','section')->get('grade.name', 'section.name');
                 }])->first();
         return response()->json($data);
     }
@@ -282,6 +297,31 @@ class RosterController extends Controller
         return response()->json($rosterToUpdate);
     }
     public function viewStudentRosterOfDay(Request $req){
-
+        $institution_id = Session::get('company_id');
+        $grades = Student_Grade::where('institution_id',$institution_id)->get();
+        $sections = Student_Section::where('institution_id',$institution_id)->get();
+        $shifts = Student_Shift::where('institution_id',$institution_id)->get();
+        $grade_id = $req->input('selectedGradeView');
+        $student_id = $req->input('selectedStudentView');
+        
+        $date = $req->input('dateView');
+        $studentRosterDetail = Student::where('institution_id',$institution_id)
+                                    ->with('shift','grade','section')
+                                    ->with(['rosters'=> function($query) use($fromDate, $toDate){
+                                        $query->whereBetween('date',[$fromDate, $toDate]);
+                                    }])
+                                    ->get();
+        
+        $rosterDetail = Student_Roster::where([['institution_id',$institution_id],['student_id',$student_id],['date',$date]])->with('student','shift')->get();
+        //dd($rosterDetail);
+        // foreach($rosterDetail as $row){
+        //     //dd($row);
+        // }
+        if($rosterDetail != null){
+            //dd($rosterDetail);
+            return view('pages/admin/roster/student_roster',['allGrades'=>$grades, 'shifts'=>$shifts, 'rosterDetail'=>$rosterDetail]);
+        }else{
+            return Redirect::back()->with('failMessage','No Roster found !');
+        }
     }
 }
