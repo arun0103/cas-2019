@@ -120,11 +120,12 @@
                       <i class="fa fa-wrench"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" role="menu">
-                      <a href="#" class="dropdown-item">Action</a>
+                      <span>Under Construction!</span>
+                      <!-- <a href="#" class="dropdown-item">Action</a>
                       <a href="#" class="dropdown-item">Another action</a>
                       <a href="#" class="dropdown-item">Something else here</a>
                       <a class="dropdown-divider"></a>
-                      <a href="#" class="dropdown-item">Separated link</a>
+                      <a href="#" class="dropdown-item">Separated link</a> -->
                     </div>
                   </div>
                   <button type="button" class="btn btn-tool" data-widget="remove">
@@ -140,12 +141,12 @@
                       <strong>Roster Schedule of : <input type='month' id='txtRosterDate' value="2019-01" required /></strong>
                     </p>
                   <div class="container_table">
-                    <table id="table_roster" class="table table-bordered table-striped">
+                    <table id="table_roster" class="table table-bordered table-striped" style="display:hidden">
                       <thead>
                         <th style="max-width:100px">Date</th>
-                        <th>Shift</th>
-                        <th>Half 1</th>
-                        <th>Half 2</th>
+                        <th>Roster</th>
+                        <th>Punch In</th>
+                        <th>Punch Out</th>
                         <th>Actions</th>
                       </thead>
                       <tbody id="tbody_roster">
@@ -155,13 +156,6 @@
                     <p id="no_roster_info">Dear User,
                     You have no rosters assigned for this month. 
                     Please Contact Admin!</p>
-
-
-                    <div class="chart">
-                      <!-- Sales Chart Canvas -->
-                      <!-- <canvas id="salesChart" height="180" style="height: 180px;"></canvas> -->
-                    </div>
-                    <!-- /.chart-responsive -->
                   </div>
                   <!-- /.col -->
                   <div class="col-md-4">
@@ -210,187 +204,14 @@
                 <!-- /.row -->
               </div>
               <!-- ./card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-success"><i class="fa fa-caret-up"></i> 17%</span>
-                      <h5 class="description-header">$35,210.43</h5>
-                      <span class="description-text">TOTAL REVENUE</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-warning"><i class="fa fa-caret-left"></i> 0%</span>
-                      <h5 class="description-header">$10,390.90</h5>
-                      <span class="description-text">TOTAL COST</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-success"><i class="fa fa-caret-up"></i> 20%</span>
-                      <h5 class="description-header">$24,813.53</h5>
-                      <span class="description-text">TOTAL PROFIT</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block">
-                      <span class="description-percentage text-danger"><i class="fa fa-caret-down"></i> 18%</span>
-                      <h5 class="description-header">1200</h5>
-                      <span class="description-text">GOAL COMPLETIONS</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                </div>
-                <!-- /.row -->
-              </div>
+             
               <!-- /.card-footer -->
             </div>
             <!-- /.card -->
           </div>
           <!-- /.col -->
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-title" id= "report_monthly">Monthly Recap Report |</h5>
-
-
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-widget="collapse">
-                    <i class="fa fa-minus"></i>
-                  </button>
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-                      <i class="fa fa-wrench"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-                      <a href="#" class="dropdown-item">Action</a>
-                      <a href="#" class="dropdown-item">Another action</a>
-                      <a href="#" class="dropdown-item">Something else here</a>
-                      <a class="dropdown-divider"></a>
-                      <a href="#" class="dropdown-item">Separated link</a>
-                    </div>
-                  </div>
-                  <button type="button" class="btn btn-tool" data-widget="remove">
-                    <i class="fa fa-times"></i>
-                  </button>
-                </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-8">
-                    <p class="text-center">
-                      <strong>Employee Present: 1 Jan, 2014 - 30 Jul, 2014</strong>
-                    </p>
-
-                    <div class="chart">
-                      <!-- Sales Chart Canvas -->
-                      <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
-                    </div>
-                    <!-- /.chart-responsive -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-md-4">
-                    <p class="text-center">
-                      <strong>Goal Completion</strong>
-                    </p>
-
-                    <div class="progress-group">
-                      Add Products to Cart
-                      <span class="float-right"><b>160</b>/200</span>
-                      <div class="progress progress-sm">
-                        <div class="progress-bar bg-primary" style="width: 80%"></div>
-                      </div>
-                    </div>
-                    <!-- /.progress-group -->
-
-                    <div class="progress-group">
-                      Complete Purchase
-                      <span class="float-right"><b>310</b>/400</span>
-                      <div class="progress progress-sm">
-                        <div class="progress-bar bg-danger" style="width: 75%"></div>
-                      </div>
-                    </div>
-
-                    <!-- /.progress-group -->
-                    <div class="progress-group">
-                      <span class="progress-text">Visit Premium Page</span>
-                      <span class="float-right"><b>480</b>/800</span>
-                      <div class="progress progress-sm">
-                        <div class="progress-bar bg-success" style="width: 60%"></div>
-                      </div>
-                    </div>
-
-                    <!-- /.progress-group -->
-                    <div class="progress-group">
-                      Send Inquiries
-                      <span class="float-right"><b>250</b>/500</span>
-                      <div class="progress progress-sm">
-                        <div class="progress-bar bg-warning" style="width: 50%"></div>
-                      </div>
-                    </div>
-                    <!-- /.progress-group -->
-                  </div>
-                  <!-- /.col -->
-                </div>
-                <!-- /.row -->
-              </div>
-              <!-- ./card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-success"><i class="fa fa-caret-up"></i> 17%</span>
-                      <h5 class="description-header">$35,210.43</h5>
-                      <span class="description-text">TOTAL REVENUE</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-warning"><i class="fa fa-caret-left"></i> 0%</span>
-                      <h5 class="description-header">$10,390.90</h5>
-                      <span class="description-text">TOTAL COST</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-success"><i class="fa fa-caret-up"></i> 20%</span>
-                      <h5 class="description-header">$24,813.53</h5>
-                      <span class="description-text">TOTAL PROFIT</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block">
-                      <span class="description-percentage text-danger"><i class="fa fa-caret-down"></i> 18%</span>
-                      <h5 class="description-header">1200</h5>
-                      <span class="description-text">GOAL COMPLETIONS</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                </div>
-                <!-- /.row -->
-              </div>
-              <!-- /.card-footer -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-        </div>
+        
         <!-- /.row -->
 
         <!-- Main row -->
@@ -411,11 +232,12 @@
     $('#table_roster').hide(); 
       
     var date = new Date();
-    var month = date.getMonth();
-    var year = date.getYear();
+    var month = date.getMonth() + 1 ; // January is 0
+    var year = date.getFullYear();
+    console.log(year + '-'+ month);
     var monthName = ""; 
     switch(month){
-        case 1 : monthName = "January, " + year;break;
+        case 1 : monthName = "January, " + year; break;
         case 2 : monthName = "February, " + year;break;
         case 3 : monthName = "March, " + year;break;
         case 4 : monthName = "April, " + year;break;
@@ -428,7 +250,8 @@
         case 11 : monthName = "November, " + year;break;
         case 12 : monthName = "December, " + year;break;
       } 
-      $('#txtRosterDate').text(monthName); 
+      $('#txtRosterDate').val(year+'-'+month).change();  
+      $('#txtRosterDate').text(monthName).change(); 
       updateRosterReport();
     $('.loading').hide();
 
@@ -453,6 +276,7 @@
       var txt =  $("#txtRosterDate").val();
       var month = txt.split('-');
       var monthName ="";
+      
       switch(month[1]){
         case '01' : monthName = "January, " + month[0];break;
         case '02' : monthName = "February, " + month[0];break;
@@ -469,11 +293,9 @@
       }
       $('#rosterMonth').text(monthName);
 
-      $.get('/employee/roster/'+month[1]+'/'+month[0],function(data){
-        console.log(data);
-        if(data.length<=0){
-          console.log('No Roster Found!');
-
+      $.get('/student/roster/'+month[1]+'/'+month[0],function(data){
+        //console.log(data);
+        if(data.length<=0){ // When roster is not found. 
           $('#no_roster_info').show();
           $('#table_roster').hide();
           
@@ -492,7 +314,8 @@
           $('#late_come').text("-").change();
           $('#late_allowed').text("-").change();
           $('#progress_late').width("0%");
-        }else{
+        }
+        else{
           $('#no_roster_info').hide();
           $('#table_roster').show();
                    
@@ -525,33 +348,52 @@
           }
           $('#total_total').text(data.length).change();
           
-          
-
           $absentDays = 0;
           $presentDays = 0;
           $holidaysCount = 0;
-          $lateCount =0;
+          $lateCount = 0;
           $('#tbody_roster').empty();
+          var punch_in, punch_out;
+          var punch_in_time = null;
+          var punch_out_time = null;
+          var roster_type;
           for($i=0;$i<data.length;$i++){
-            //console.log(data[$i]);
+            console.log(data[$i]);
+            if(data[$i]['punch_in'] != null){
+              punch_in = data[$i]['punch_in'].split(' ');
+              punch_in_time = punch_in[1];
+            }else{
+              punch_in_time = "N/A";
+            }
+            if(data[$i]['punch_out'] != null){
+              punch_out = data[$i]['punch_out'].split(' ');
+              punch_out_time = punch_out[1];
+            }else{
+              punch_out_time = "N/A";
+            }
+            switch(data[$i]['is_holiday']){
+              case 'C': roster_type = '<span style="color:green">Class</span>';break;
+              case 'H': roster_type = '<span style="color:red">Holiday</span>';break;
+              case 'L': roster_type = '<span style="color:blue">Leave Taken</span>';break;
+            }
             var rosterDetail ='';
             if(month[1]== today.getMonth()+1){
               if(today.getDate() < $i+1)
-                rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+data[$i].shift['name']+'</td><td>'+data[$i]['final_half_1']+'</td><td>'+data[$i]['final_half_2']+'</td><td><button>Apply Leave</button></td></tr>';
+                rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+roster_type+'</td><td>'+punch_in_time+'</td><td>'+punch_out_time+'</td><td><button>Apply Leave</button></td></tr>';
               else
-               rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+data[$i].shift['name']+'</td><td>'+data[$i]['final_half_1']+'</td><td>'+data[$i]['final_half_2']+'</td><td></td></tr>';
+                rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+roster_type+'</td><td>'+punch_in_time+'</td><td>'+punch_out_time+'</td><td></td></tr>';
             }else
-              rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+data[$i].shift['name']+'</td><td>'+data[$i]['final_half_1']+'</td><td>'+data[$i]['final_half_2']+'</td><td></td></tr>';
+              rosterDetail = '<tr><td>'+data[$i].date+'</td><td>'+roster_type+'</td><td>'+punch_in_time+'</td><td>'+punch_out_time+'</td><td></td></tr>';
             $('#tbody_roster').append(rosterDetail);
            
 
             if(data[$i].is_holiday == "H" || data[$i].is_holiday == "O")
               $holidaysCount++;
-            else if(data[$i].final_half_1 == 'AB' && data[$i].final_half_2 == 'AB')
+            else if(data[$i].punch_in == null && data[$i].punch_out == null)
               $absentDays++;
-            else if(data[$i].final_half_1 == 'PR' && data[$i].final_half_2 == 'PR')
+            else if(data[$i].punch_in != null)
               $presentDays++;
-            else if(data[$i].final_half_1 == 'AB' && data[$i].final_half_2 == 'PR')
+            else if(data[$i].punch_in != null )
               $lateCount++;
           }
           $('#absent_taken').text($absentDays).change();
@@ -567,7 +409,7 @@
           });
 
           $toBePresentDays = $totalRoster - $holidaysCount;
-          $('#present_present').texnt($presentDays).change();
+          $('#present_present').text($presentDays).change();
           $('#present_total').text($toBePresentDays).change();
           $('#progress_present').width(($presentDays*100/$toBePresentDays).toString()+"%");
 

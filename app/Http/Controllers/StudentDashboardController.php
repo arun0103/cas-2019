@@ -9,6 +9,7 @@ use App\Student;
 use App\Student_Grade;
 use App\Student_Section;
 use App\Student_Punch;
+use App\Student_Roster;
 
 class StudentDashboardController extends Controller
 {
@@ -29,5 +30,15 @@ class StudentDashboardController extends Controller
              $query->with('grade','section');
         }])->get();
         return response()->json($presentStudents);
+    }
+
+    // Student Dashboard
+    public function getStudentMonthlyLogDetails($month,$year){
+        $startDate = $year .'-'.$month.'-01';
+        $endDate = $year.'-'.$month.'-31';
+        $studentRosters = Student_Roster::where([['institution_id',Session::get('company_id')],['student_id',Session::get('user_id')]])
+                                ->whereBetween('date',[$startDate,$endDate])
+                                ->with('shift')->get();
+        return response()->json($studentRosters);
     }
 }

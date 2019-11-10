@@ -305,6 +305,11 @@ Route::get('/employee/dashboard', function () {
 Route::get('/employee/roster/{month}/{year}','EmployeeController@getEmployeeMonthlyLogDetails');
 
 
+///// Student login
+
+Route::get('/student/roster/{month}/{year}','StudentDashboardController@getStudentMonthlyLogDetails');
+
+
 
 
 
