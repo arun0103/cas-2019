@@ -7,7 +7,7 @@
 
   <link rel="shortcut icon" href="{{ asset('img/AdminLTELogo.png') }}">
   
-  <title>CAS | Dashboard 2</title>
+  <title>| CAS | </title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   
   <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous"> -->
@@ -42,9 +42,9 @@
         <li class="nav-item d-none d-sm-inline-block">
           <a href="{{route('main')}}" class="nav-link">Home</a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
+        <!-- <li class="nav-item d-none d-sm-inline-block">
           <a href="{{route('reportSelect')}}" class="nav-link">Reports</a>
-        </li>
+        </li> -->
         <li class="nav-item d-none d-sm-inline-block">
           <a href="#" class="nav-link">Contact</a>
         </li>
@@ -90,7 +90,7 @@
                 <span class="badge badge-danger navbar-badge">3</span>
               </a>
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <a href="#" class="dropdown-item">
+                <a href="#" class="dropdown-item"> -->
                   <!-- Message Start -->
                   <!-- <div class="media">
                     <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
@@ -106,7 +106,7 @@
                   <!-- Message End -->
                 <!-- </a>
                 <div class="dropdown-divider"></div> -->
-                <!-- <a href="#" class="dropdown-item">
+                <!-- <a href="#" class="dropdown-item"> -->
                   <!-- Message Start -->
                   <!-- <div class="media">
                     <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
@@ -122,7 +122,7 @@
                   <!-- Message End -->
                 <!--</a> -->
                 <!-- <div class="dropdown-divider"></div> -->
-                <!-- <a href="#" class="dropdown-item">
+                <!-- <a href="#" class="dropdown-item"> -->
                   <!-- Message Start -->
                   <!-- <div class="media">
                     <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 use Session;
 use Carbon\Carbon;
@@ -53,10 +54,15 @@ class StudentController extends Controller
     }
     public function updateStudent(Request $req, $id){
         $update = Student::where('id',$id)->first();
+        
 
-        $check_user_exists = User::where('employee_id',$update->student_id)->first();
-
-    
+        if($req->email != null){
+            $check_email_exists = User::where('email',$req->email)->first();
+            if($check_email_exists != null){
+                return Redirect::back()->with('failMessage_duplicateEmail','Email Already Exists !');
+            }
+        }
+      
         $update->student_id = $req->student_id;
         $update->name = $req->name ;
         $update->shift_id = $req->shift_id ;
@@ -78,8 +84,10 @@ class StudentController extends Controller
         $update->contact_2_name = $req->contact_2_name ;
         $update->sms_option = $req->sms_option ;
         $update->updated_at = Carbon::now();
-
+        
         $update->save();
+        
+        $check_user_exists = User::where('employee_id',$update->student_id)->first();
         if($check_user_exists != null){ // User Exists .. update
             if($check_user_exists->email != $update->email){
                 $check_user_exists->email = $update->email;

@@ -7,7 +7,15 @@
 @endsection
 
 @section('content')
+
     <div class="loading">Loading&#8230;</div>
+    @if (session('failMessage_duplicateEmail'))
+        <div class="alert alert-error alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-minus-circle"></i> Failed!</h4>
+            {{ session('failMessage_duplicateEmail') }}
+        </div>
+    @endif
     <div>
         <input type="hidden" id="inputInstitutionId" disabled value="{{Session::get('company_id')}}">
     </div>
@@ -109,8 +117,9 @@
     </div>
     <!-- /.box -->
     <div class="modal fade" id="modal-add">
-        <form id="form_addStudent" class="form-horizontal" method="post" action="/addStudent" autocomplete="off">
+        <form id="form_addStudent" class="form-horizontal" method="patch" action="/addStudent" autocomplete="off">
             {{ csrf_field() }}
+            {{ method_field('PATCH') }}
             <div class="modal-dialog modal-lg" style="width:90% !important;height:90% !important; padding:0;margin:0 auto">
                 <div class="modal-content">
                     <div class="modal-header">
