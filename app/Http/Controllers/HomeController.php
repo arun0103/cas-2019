@@ -110,14 +110,14 @@ class HomeController extends Controller
                 case 'student'  :   //$company_type = Company::where('company_id',$loggedInUser->institution_id)->first()->company_type;
                                     session(['company_type' => "institute"]);
                                     $totalRosters = Student_Roster::where('student_id',$loggedInUser->employee_id)->get();
-                                    $presentRosters = Student_Roster::where([['student_id',$loggedInUser->employee_id],['punch_in','!=',null]])->get();
+                                    $presentRosters = Student_Punch::where([['student_id',$loggedInUser->employee_id],['punch_1','!=',null]])->get();
                                     $absentRosters = Student_Roster::where([['student_id',$loggedInUser->employee_id],['punch_in',null]])->get();
                                     //dd($totalRosters);
                                     if(count($totalRosters)>0){
                                         $rosterDetails = [
                                             'total'     => count($totalRosters),
                                             'present'   => count($presentRosters),
-                                            'absent'    => count($absentRosters),
+                                            'absent'    => count($totalRosters) - count($presentRosters),
                                             'late'      =>  0
                                         ];
                                         return view('pages/student/dashboard',['roster'=>$rosterDetails]);
