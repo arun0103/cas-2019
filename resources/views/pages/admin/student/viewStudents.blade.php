@@ -470,14 +470,14 @@
                 type = "PUT"; //for updating existing resource
                 url = '/updateStudent/' + original_student_id;
             }
-            console.log(formData);
+            //console.log(formData);
             $.ajax({
                 type: type,
                 url: url,
                 data: formData,
                 dataType: 'json',
                 success: function (data) {
-                    console.log('Success');
+                    //console.log('Success');
                     var current_address = "";
                     if(data.temporary_address != null){
                         current_address = data.temporary_address;
@@ -486,11 +486,11 @@
                     }
                     var student_grade_section = "";
                     if(data.grade != null){
-                        console.log("grade not null");
+                        //console.log("grade not null");
                         student_grade_section = data.grade['name'];
                     }
                     if(data.section != null){
-                        console.log("section not null");
+                        //console.log("section not null");
                         student_grade_section += " - " + data.section['name'];
                     }
                     var guardian_name = data.guardian_name!=null ? data.guardian_name : '';
@@ -515,8 +515,8 @@
                     student += '<td><button class="btn btn-warning btn-detail open_modal" value="' + data.id + '"><i class="fa fa-edit"></i></button>';
                     student += ' <button class="btn btn-danger btn-delete delete-row" value="' + data.id + '"><i class="fa fa-trash"></i></button></td></tr>';
                     if (state == "add"){ //if user added a new record
-                        console.log("Added");
-                        console.log(data);
+                        //console.log("Added");
+                        //console.log(data);
                         $('#students-list').prepend(student);
                     }else{ //if user updated an existing record
                         $("#student" + original_student_id).replaceWith( student );

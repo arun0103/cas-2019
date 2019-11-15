@@ -53,9 +53,8 @@ class StudentController extends Controller
         return response()->json($delete);
     }
     public function updateStudent(Request $req, $id){
-        $update = Student::where('id',$id)->first();
+        $findStudent = Student::where('id',$id)->first();
         
-
         if($req->email != null){
             $check_email_exists = User::where('email',$req->email)->first();
             if($check_email_exists != null){
@@ -73,7 +72,10 @@ class StudentController extends Controller
         $update->gender = $req->gender ;
         $update->permanent_address = $req->permanent_address ;
         $update->temporary_address = $req->temporary_address ;
-        $update->email = $req->email ;
+
+        if($req->email != $findStudent->email)
+            $update->email = $req->email ;
+            
         $update->father_name = $req->father_name ;
         $update->mother_name = $req->mother_name ;
         $update->guardian_name = $req->guardian_name ;
