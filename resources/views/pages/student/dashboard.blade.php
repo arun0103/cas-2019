@@ -301,7 +301,7 @@
       var index = 0;
       for(var i =0; i<parts.length;i++){
         url += parts[i];
-        if(i != parts.length){
+        if(i != parts.length-1){
           url += "%2F";
         }
 
