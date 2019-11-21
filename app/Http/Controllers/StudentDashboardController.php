@@ -43,8 +43,23 @@ class StudentDashboardController extends Controller
     }
 
     public function getTotalRosterSummary($student_id){
+        $student_id_new = explode("%2F", $student_id);
+        $real_id="";
+        $index = 0;
+        if(count($student_id_new)>1){
+            foreach($student_id_new as $part){
+                $real_id +=$part;
+                if($index != count($student_id_new)){
+                    $real_id +="/";
+                }
+                $index++;
+            }
+        }else{
+            $real_id = $student_id;
+        }
+
         $institution_id = Session::get('company_id');
-        $totalRosters = Student_Roster::where('student_id',$student_id)->get();
+        $totalRosters = Student_Roster::where('student_id',$real_id)->get();
         $totalClasses = 0;
         $totalHolidays = 0;
         $totalOffs = 0;
