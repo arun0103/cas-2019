@@ -43,7 +43,8 @@ class StudentDashboardController extends Controller
     }
 
     public function getTotalRosterSummary($student_id){
-        $student_id_new = explode("%2F", $student_id);
+        $student_id_new = explode('%2F', $student_id);
+        
         $real_id="";
         $index = 0;
         if(count($student_id_new)>1){
