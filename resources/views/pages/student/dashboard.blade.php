@@ -251,7 +251,7 @@
     var date = new Date();
     var month = date.getMonth() + 1 ; // January is 0
     var year = date.getFullYear();
-    console.log(year + '-'+ month);
+    //console.log(year + '-'+ month);
     var monthName = ""; 
     switch(month){
         case 1 : monthName = "January, " + year; break;
@@ -295,8 +295,22 @@
 
   $('#total_days_roster').click(function(){
     //console.log('clicked by :'+student_id);
+    var url = "/dashboard/getTotalRosterSummary/";
+    if(student_id.includes("/")==true){
+      var parts = student_id.split("/");
+      var index = 0;
+      for(var i =0; i<parts.length;i++){
+        url += parts[i];
+        if(i != parts.length){
+          url += "%2F";
+        }
+
+      }
+    }else{
+      url = "/dashboard/getTotalRosterSummary/"+student_id;
+    }
     $.ajax({
-      'url': "/dashboard/getTotalRosterSummary/"+student_id,
+      'url': url,
       'method': "GET",
       'contentType': 'application/json'
       }).done( function(data) {
@@ -320,8 +334,23 @@
   });
 
   $('#present_days_roster').click(function(){
+    var url = "/dashboard/getTotalPresentSummary/";
+    if(student_id.includes("/")==true){
+      var parts = student_id.split("/");
+      var index = 0;
+      for(var i =0; i<parts.length;i++){
+        url += parts[i];
+        if(i != parts.length){
+          url += "%2F";
+        }
+
+      }
+    }else{
+      url = "/dashboard/getTotalPresentSummary/"+student_id;
+    }
+    
     $.ajax({
-      'url': "/dashboard/getTotalPresentSummary/"+student_id,
+      'url': url,
       'method': "GET",
       'contentType': 'application/json'
       }).done( function(data) {
