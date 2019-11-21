@@ -65,10 +65,11 @@ class StudentDashboardController extends Controller
     }
 
     public function getTotalPresentSummary($student_id){
+        
         $institution_id = Session::get('company_id');
         $totalPresent = Student_Punch::where([['institution_id',$institution_id],['student_id',$student_id]])->get();
         
-        return  response()->json($totalPresent);
+        return  response()->json($student_id);
     }
 
     public function getTotalAbsentSummary($student_id){
