@@ -48,9 +48,9 @@ class StudentDashboardController extends Controller
         $index = 0;
         if(count($student_id_new)>1){
             foreach($student_id_new as $part){
-                $real_id +=$part;
+                $real_id =$real_id.$part;
                 if($index != count($student_id_new)-1){
-                    $real_id +="/";
+                    $real_id =$real_id."/";
                 }
                 $index++;
             }
