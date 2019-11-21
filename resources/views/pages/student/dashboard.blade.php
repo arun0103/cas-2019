@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="{{asset('js/plugins/datatables/css/dataTables.bootstrap4.css')}}">
 @endsection
 @section('content')
+  <input type='hidden' id='student_id' value="{{Session::get('user_id')}}">
 <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -42,7 +43,7 @@
         <!-- Info boxes -->
         <div class="row">
           <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
+            <div class="info-box"  id="total_days_roster">
               <span class="info-box-icon bg-info elevation-1"><i class="fa fa-users"></i></span>
 
               <div class="info-box-content">
@@ -55,7 +56,7 @@
           </div>
           <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
+            <div class="info-box mb-3" id="absent_days_roster">
               <span class="info-box-icon bg-danger elevation-1"><i class="fa fa-users"></i></span>
 
               <div class="info-box-content">
@@ -72,7 +73,7 @@
           <div class="clearfix hidden-md-up"></div>
 
           <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
+            <div class="info-box mb-3"  id="present_days_roster">
               <span class="info-box-icon bg-success elevation-1"><i class="fa fa-users"></i></span>
 
               <div class="info-box-content">
@@ -85,7 +86,7 @@
           </div>
           <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
+            <div class="info-box mb-3" id="late_days_roster">
               <span class="info-box-icon bg-warning elevation-1"><i class="fa fa-users"></i></span>
 
               <div class="info-box-content">
@@ -100,6 +101,18 @@
           <!-- /.col -->
         </div>
         <!-- /.row -->
+        <div id="div-total-student-container" class="no-display">
+          @include('pages.dashboard.students.total-students-roster')
+        </div>
+        <div id="div-absent-student-container" class="no-display">
+          @include('pages.dashboard.students.absent-students-roster')
+        </div>
+        <div id="div-present-student-container" class="no-display">
+          @include('pages.dashboard.students.present-students-roster')
+        </div>
+        <div id="div-late-student-container" class="no-display">
+          @include('pages.dashboard.students.late-students-roster')
+        </div>
 
         <div class="row">
           <div class="col-md-12">
@@ -155,7 +168,9 @@
                     </div>
                     <p id="no_roster_info">Dear User,
                     You have no rosters assigned for this month. 
-                    Please Contact Admin!</p>
+                    <span style="text-align:center"><button type="button" class="btn btn-tool" data-widget="generate" style="margin:auto;display:block;">Generate</button></span>
+                    </p>
+                    
                   </div>
                   <!-- /.col -->
                   <div class="col-md-4">
@@ -225,9 +240,11 @@
 <script src="{{asset('js/plugins/jquery/MonthPicker.js')}}"></script>
 <script src="{{asset('js/plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('js/plugins/datatables/dataTables.bootstrap4.js')}}"></script>
-<script>
+<script type='text/javascript'>
+  
+  var student_id = $('#student_id').val();
   $(document).ready(function(){
-    
+   
     $('#no_roster_info').hide();
     $('#table_roster').hide(); 
       
@@ -270,6 +287,91 @@
     $('#txtRosterDate').change(function(){
       updateRosterReport();
     });
+
+
+    
+    
+  });
+
+  $('#total_days_roster').click(function(){
+    //console.log('clicked by :'+student_id);
+    $.ajax({
+      'url': "/dashboard/getTotalRosterSummary/"+student_id,
+      'method': "GET",
+      'contentType': 'application/json'
+      }).done( function(data) {
+        //console.log(data);
+        $('#span_total_roster_days').text(data.totalRosters).change();
+        $('#span_total_classes').text(data.totalClasses).change();
+        $('#span_total_holidays').text(data.totalHolidays).change();
+        $('#span_total_offs').text(data.totalOffs).change();
+        $('#span_total_leaves').text('0');
+      });
+      $('#div-total-student-container').addClass('display-block').removeClass('no-display');
+
+      $('#div-present-student-container').addClass('no-display').removeClass('display-block');
+      $('#div-absent-student-container').addClass('no-display').removeClass('display-block');
+      $('#div-late-student-container').addClass('no-display').removeClass('display-block');
+
+
+      $('html, body').animate({
+          scrollTop: $("#report_roster").offset().top
+      }, 1000);    
+  });
+
+  $('#present_days_roster').click(function(){
+    $.ajax({
+      'url': "/dashboard/getTotalPresentSummary/"+student_id,
+      'method': "GET",
+      'contentType': 'application/json'
+      }).done( function(data) {
+        console.log(data);
+       
+      });
+      $('#div-present-student-container').addClass('display-block').removeClass('no-display');
+      
+      $('#div-total-student-container').addClass('no-display').removeClass('display-block');
+      $('#div-absent-student-container').addClass('no-display').removeClass('display-block');
+      $('#div-late-student-container').addClass('no-display').removeClass('display-block');
+
+
+      $('html, body').animate({
+          scrollTop: $("#report_roster").offset().top
+      }, 1000);    
+  });
+  $('#absent_days_roster').click(function(){
+    $.ajax({
+      'url': "/dashboard/getTotalAbsentSummary/"+student_id,
+      'method': "GET",
+      'contentType': 'application/json'
+      }).done( function(data) {
+        console.log(data);
+        if ( $.fn.dataTable.isDataTable( '#absent-summary-table' ) ) {
+          table = $('#absent-summary-table').DataTable();
+      }
+      else {
+          table = $('#absent-summary-table').DataTable({
+                    "aaData": data,
+                    "columns": [
+                        { "data": "date", "defaultContent":"N/A"  },
+                        { "data": "0", "defaultContent":"N/A"  },
+                    ]
+                  });
+        }
+       
+      });
+      $('#div-absent-student-container').addClass('display-block').removeClass('no-display');
+      
+      $('#div-total-student-container').addClass('no-display').removeClass('display-block');
+      $('#div-present-student-container').addClass('no-display').removeClass('display-block');
+      $('#div-late-student-container').addClass('no-display').removeClass('display-block');
+
+
+      $('html, body').animate({
+          scrollTop: $("#report_roster").offset().top
+      }, 1000);    
+  });
+  $('#late_days_roster').click(function(){
     
   });
   function updateRosterReport(){
@@ -358,7 +460,7 @@
           var punch_out_time = null;
           var roster_type;
           for($i=0;$i<data.length;$i++){
-            console.log(data[$i]);
+            //console.log(data[$i]);
             if(data[$i]['punch_in'] != null){
               punch_in = data[$i]['punch_in'].split(' ');
               punch_in_time = punch_in[1];

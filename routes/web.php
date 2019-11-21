@@ -309,6 +309,12 @@ Route::get('/employee/roster/{month}/{year}','EmployeeController@getEmployeeMont
 
 Route::get('/student/roster/{month}/{year}','StudentDashboardController@getStudentMonthlyLogDetails');
 
+// Student dashboard
+Route::get('/dashboard/getTotalRosterSummary/{student_id}','StudentDashboardController@getTotalRosterSummary');
+Route::get('/dashboard/getTotalPresentSummary/{student_id}','StudentDashboardController@getTotalPresentSummary');
+Route::get('/dashboard/getTotalAbsentSummary/{student_id}','StudentDashboardController@getTotalAbsentSummary');
+Route::get('/dashboard/getTotalLateSummary/{student_id}','StudentDashboardController@getTotalLateSummary');
+
 
 
 

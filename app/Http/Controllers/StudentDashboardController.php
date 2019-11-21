@@ -41,4 +41,42 @@ class StudentDashboardController extends Controller
                                 ->with('shift')->get();
         return response()->json($studentRosters);
     }
+
+    public function getTotalRosterSummary($student_id){
+        $institution_id = Session::get('company_id');
+        $totalRosters = Student_Roster::where('student_id',$student_id)->get();
+        $totalClasses = 0;
+        $totalHolidays = 0;
+        $totalOffs = 0;
+        foreach($totalRosters as $roster){
+            switch($roster->is_holiday){
+                case 'O' : $totalOffs++; break;
+                case 'H' : $totalHolidays++; break;
+                case 'C' : $totalClasses++; break;
+            }
+        }
+        $totalRosterSummary = [
+            'totalRosters' =>count($totalRosters),
+            'totalClasses' => $totalClasses,
+            'totalHolidays' => $totalHolidays,
+            'totalOffs' => $totalOffs
+        ];
+        return response()->json($totalRosterSummary);
+    }
+
+    public function getTotalPresentSummary($student_id){
+        $institution_id = Session::get('company_id');
+        $totalPresent = Student_Punch::where([['institution_id',$institution_id],['student_id',$student_id]])->get();
+        
+        return  response()->json($totalPresent);
+    }
+
+    public function getTotalAbsentSummary($student_id){
+        $institution_id = Session::get('company_id');
+        $totalPresent = Student_Punch::where([['institution_id',$institution_id],['student_id',$student_id]])->get();
+
+        $totalAbsent_roster = Student_Roster::where([['student_id',$student_id],['punch_in',null],['is_holiday','!=','H']])->get();
+        
+        return response()->json($totalAbsent_roster);
+    }
 }

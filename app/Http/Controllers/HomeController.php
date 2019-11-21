@@ -109,6 +109,7 @@ class HomeController extends Controller
                                     break; 
                 case 'student'  :   //$company_type = Company::where('company_id',$loggedInUser->institution_id)->first()->company_type;
                                     session(['company_type' => "institute"]);
+                            
                                     $totalRosters = Student_Roster::where('student_id',$loggedInUser->employee_id)->get();
                                     $presentRosters = Student_Punch::where([['student_id',$loggedInUser->employee_id],['punch_1','!=',null]])->get();
                                     $absentRosters = Student_Roster::where([['student_id',$loggedInUser->employee_id],['punch_in',null]])->get();
