@@ -45,7 +45,7 @@ class StudentDashboardController extends Controller
     public function getTotalRosterSummary($student_id){
         $real_id="";
         if(str_contains($student_id,"%2F")){
-            $student_id_new = explode('%2F', $student_id);
+            $student_id_new = explode("%2F", $student_id);
             $index = 0;
             if(count($student_id_new)>1){
                 foreach($student_id_new as $part){
@@ -61,7 +61,6 @@ class StudentDashboardController extends Controller
             $real_id = $student_id;
         }
         
-
         $institution_id = Session::get('company_id');
         $totalRosters = Student_Roster::where('student_id',$real_id)->get();
         $totalClasses = 0;
