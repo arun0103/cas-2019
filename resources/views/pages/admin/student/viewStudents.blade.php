@@ -117,9 +117,9 @@
     </div>
     <!-- /.box -->
     <div class="modal fade" id="modal-add">
-        <form id="form_addStudent" class="form-horizontal" method="patch" action="/addStudent" autocomplete="off">
+        <form id="form_addStudent" class="form-horizontal" method="post" action="/addStudent" autocomplete="off">
             {{ csrf_field() }}
-            {{ method_field('PATCH') }}
+           
             <div class="modal-dialog modal-lg" style="width:90% !important;height:90% !important; padding:0;margin:0 auto">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -345,11 +345,11 @@
         function populateSections(grade){
             $('#select_section').empty().trigger('change');
             $.get("/sectionsOfGrade/"+grade, function(data){
-                console.log(data);
+                //console.log(data);
                 $("#select_section").empty();
                 $('#select_section').append('<option></option>');
                 //alert(data.length);
-                for(var i=0;i<data.length;i++){
+                for(var i=0; i<data.length; i++){
                     var newSection = $('<option value="'+data[i].section_id+'">'+data[i].name+'</option>');
                     $('#select_section').append(newSection).trigger('change');
                 }
@@ -362,7 +362,7 @@
             state="update";
             $('#error_msg_id').removeClass('error').addClass('no-error');
             var student_id = $(this).val();
-            console.log(student_id);
+            //console.log(student_id);
             $.get('/getStudentById/' + student_id, function (data) {
                 //success data
                 original_student_id = student_id;
@@ -477,7 +477,7 @@
                 data: formData,
                 dataType: 'json',
                 success: function (data) {
-                    //console.log('Success');
+                    console.log(data);
                     var current_address = "";
                     if(data.temporary_address != null){
                         current_address = data.temporary_address;

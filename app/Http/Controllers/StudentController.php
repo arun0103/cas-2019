@@ -75,6 +75,8 @@ class StudentController extends Controller
 
         if($req->email != $findStudent->email)
             $update->email = $req->email ;
+        else
+            $update->email = $findStudent->email;
             
         $update->father_name = $req->father_name ;
         $update->mother_name = $req->mother_name ;
@@ -87,27 +89,29 @@ class StudentController extends Controller
         $update->sms_option = $req->sms_option ;
         $update->updated_at = Carbon::now();
         
-        $update->save();
-        
-        $check_user_exists = User::where('employee_id',$update->student_id)->first();
-        if($check_user_exists != null){ // User Exists .. update
-            if($check_user_exists->email != $update->email){
-                $check_user_exists->email = $update->email;
-                $check_user_exists->save();
+        if($update->save()){
+            $check_user_exists = User::where('employee_id',$update->student_id)->first();
+            if($check_user_exists != null){ // User Exists .. update
+                if($check_user_exists->email != $update->email){
+                    $check_user_exists->email = $update->email;
+                    $check_user_exists->save();
+                }
+            }else { // New User
+                $user = User::create([
+                    'company_id'    => Session::get('company_id'),
+                    'employee_id'   => $update->student_id,
+                    'name'          => $update->name,
+                    'email'         => $update->email,
+                    'role'          => 'student',
+                    'password'      => bcrypt('test@123'),
+                    'added_by'      => Session::get('user_id'),
+                    'password_changed'=> 0
+                ]);
+                $user->save();
             }
-        }else {
-            $user = User::create([
-                'company_id'    => Session::get('company_id'),
-                'employee_id'   => $update->student_id,
-                'name'          => $update->name,
-                'email'         => $update->email,
-                'role'          => 'student',
-                'password'      => bcrypt('test@123'),
-                'added_by'      => Session::get('user_id'),
-                'password_changed'=> 0
-            ]);
-            $user->save();
         }
+        
+        
         
         return response()->json($update);
         

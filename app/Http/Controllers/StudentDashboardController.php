@@ -44,6 +44,8 @@ class StudentDashboardController extends Controller
 
     public function getTotalRosterSummary($student_id){
         $real_id="";
+        //dd($student_id);
+        error_log('Some message here.');
         if(str_contains($student_id,"%2F")){
             $student_id_new = explode("%2F", $student_id);
             $index = 0;
@@ -87,14 +89,14 @@ class StudentDashboardController extends Controller
         $institution_id = Session::get('company_id');
         $totalPresent = Student_Punch::where([['institution_id',$institution_id],['student_id',$student_id]])->get();
         
-        return  response()->json($student_id);
+        return  response()->json($totalPresent);
     }
 
     public function getTotalAbsentSummary($student_id){
         $institution_id = Session::get('company_id');
         $totalPresent = Student_Punch::where([['institution_id',$institution_id],['student_id',$student_id]])->get();
 
-        $totalAbsent_roster = Student_Roster::where([['student_id',$student_id],['punch_in',null],['is_holiday','!=','H']])->get();
+        $totalAbsent_roster = Student_Roster::where([['institution_id',$institution_id],['student_id',$student_id],['punch_in',null],['is_holiday','!=','H']])->get();
         
         return response()->json($totalAbsent_roster);
     }

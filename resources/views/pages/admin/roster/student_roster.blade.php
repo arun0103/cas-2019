@@ -208,7 +208,7 @@
     @if($rosterDetail !="")
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title">Students Roster Detail </h3>
+                <h3 class="box-title">Students Roster Detail : {{date('Y-m-d')}} </h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">

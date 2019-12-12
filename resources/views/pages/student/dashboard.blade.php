@@ -355,6 +355,19 @@
       'contentType': 'application/json'
       }).done( function(data) {
         console.log(data);
+        if ( $.fn.dataTable.isDataTable( '#present-summary-table' ) ) {
+          table = $('#present-summary-table').DataTable();
+        }
+        else {
+            table = $('#present-summary-table').DataTable({
+                      "aaData": data,
+                      "columns": [
+                          { "data": "date", "defaultContent":"N/A"  },
+                          { "data": data.punch_in, "defaultContent":"N/A"  },
+                          { "data": data.punch_out, "defaultContent":"N/A"  },
+                      ]
+                    });
+        }
        
       });
       $('#div-present-student-container').addClass('display-block').removeClass('no-display');
@@ -377,15 +390,15 @@
         console.log(data);
         if ( $.fn.dataTable.isDataTable( '#absent-summary-table' ) ) {
           table = $('#absent-summary-table').DataTable();
-      }
-      else {
-          table = $('#absent-summary-table').DataTable({
-                    "aaData": data,
-                    "columns": [
-                        { "data": "date", "defaultContent":"N/A"  },
-                        { "data": "0", "defaultContent":"N/A"  },
-                    ]
-                  });
+        }
+        else {
+            table = $('#absent-summary-table').DataTable({
+                      "aaData": data,
+                      "columns": [
+                          { "data": "date", "defaultContent":"N/A"  },
+                          { "data": "0", "defaultContent":"N/A"  },
+                      ]
+                    });
         }
        
       });

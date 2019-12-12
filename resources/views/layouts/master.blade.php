@@ -524,7 +524,7 @@
                   </ul>
                   <ul class="nav nav-treeview">
                     <li class="nav-item ">
-                      <a href="{{ route('viewStudentRoster',\Carbon\Carbon::now()->month) }}" class="nav-link ">
+                      <a href="{{ route('viewStudentRosterOfTheDay',\Carbon\Carbon::now()->toDateTimeString('Y-m-d')) }}" class="nav-link ">
                         <i class="nav-icon fa fa-pagelines"></i>
                         <p>
                           Rosters

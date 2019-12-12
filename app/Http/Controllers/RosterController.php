@@ -208,6 +208,12 @@ class RosterController extends Controller
             return Redirect::back()->with('failMessage','No Roster found !');
         }
     }
+    public function viewAllStudentsRosterOfADay(Request $request, $selectedMonth, $selectedDay){
+        if($selectedDay){
+
+        }
+
+    }
     public function viewStudentRoster(Request $request, $selectedMonth){
         $month = $selectedMonth;
         $year = Carbon::now()->year;
@@ -228,11 +234,28 @@ class RosterController extends Controller
         //                                 ->get();
 
         $studentRosterDetail = Student::where('institution_id',$institution_id)
-                                    ->with('shift','grade','section')
+                                    ->with([
+                                        'shift' =>function($q){
+                                            $q->select(['institution_id','shift_id','name']);
+                                        },
+                                        'grade'=>function($q){
+                                            $q->select(['institution_id','grade_id','name']);
+                                        },
+                                        'section'=>function($q){
+                                            $q->select(['institution_id','section_id','name']);
+                                        }])
                                     ->with(['rosters'=> function($query) use($fromDate, $toDate){
-                                        $query->whereBetween('date',[$fromDate, $toDate]);
+                                        $query->whereBetween('date',[$fromDate, $toDate])->select(['institution_id','student_id','is_holiday','date','updated_at']);
                                     }])
                                     ->get();
+                                    
+        // $dataToSend = [
+        //     'student.name'=>$studentRosterDetail->name,
+        //     'grade.name'=>$studentRosterDetail->grade['name'],
+        //     'section.name'=>$studentRosterDetail->section['name'],
+        //     'rosters.date'=>$studentRosterDetail->rsoters['date']
+
+        // ];
         //dd($studentRosterDetail[0]);
         if($studentRosterDetail != null){
             return view('pages/admin/roster/student_roster',['allGrades'=>$grades,'sections'=>$sections, 'shifts'=>$shifts, 'rosterDetail'=>$studentRosterDetail]);
@@ -296,7 +319,7 @@ class RosterController extends Controller
         $rosterToUpdate->save();
         return response()->json($rosterToUpdate);
     }
-    public function viewStudentRosterOfDay(Request $req){
+    public function viewStudentRosterOfDay(Request $req, $today){
         $institution_id = Session::get('company_id');
         $grades = Student_Grade::where('institution_id',$institution_id)->get();
         $sections = Student_Section::where('institution_id',$institution_id)->get();
@@ -304,22 +327,25 @@ class RosterController extends Controller
         $grade_id = $req->input('selectedGradeView');
         $student_id = $req->input('selectedStudentView');
         
-        $date = $req->input('dateView');
+        //$date = $req->input('dateView');
+        $date = Carbon::parse($today);
+        $dateOnly = explode(" ",$today);
+        //dd($dateOnly[0]);
         $studentRosterDetail = Student::where('institution_id',$institution_id)
                                     ->with('shift','grade','section')
-                                    ->with(['rosters'=> function($query) use($fromDate, $toDate){
-                                        $query->whereBetween('date',[$fromDate, $toDate]);
+                                    ->with(['rosters'=> function($query) use($dateOnly){
+                                        $query->where('date',$dateOnly[0]);
                                     }])
                                     ->get();
-        
-        $rosterDetail = Student_Roster::where([['institution_id',$institution_id],['student_id',$student_id],['date',$date]])->with('student','shift')->get();
+        //dd($studentRosterDetail);
+        $rosterDetail = Student_Roster::where([['institution_id',$institution_id],['student_id',$student_id],['date',$today]])->with('student','shift')->get();
         //dd($rosterDetail);
         // foreach($rosterDetail as $row){
         //     //dd($row);
         // }
-        if($rosterDetail != null){
+        if($studentRosterDetail != null){
             //dd($rosterDetail);
-            return view('pages/admin/roster/student_roster',['allGrades'=>$grades, 'shifts'=>$shifts, 'rosterDetail'=>$rosterDetail]);
+            return view('pages/admin/roster/student_roster',['allGrades'=>$grades, 'shifts'=>$shifts, 'rosterDetail'=>$studentRosterDetail]);
         }else{
             return Redirect::back()->with('failMessage','No Roster found !');
         }

@@ -271,7 +271,7 @@ Route::get('/getRosterDetails/{branch_id}/{employee_id}/{date}', 'AdminControlle
 
 Route::get('/viewStudentRoster/{month}', 'RosterController@viewStudentRoster')->name('viewStudentRoster');
 Route::get('/students/grade/{grade}', 'StudentController@getStudentsOfGrade');
-Route::get('/studentRoster','RosterController@viewStudentRosterOfDay');
+Route::get('/studentRoster/{date}','RosterController@viewStudentRosterOfDay')->name('viewStudentRosterOfTheDay');
 
 //Route::get('/students/grade', )
 
