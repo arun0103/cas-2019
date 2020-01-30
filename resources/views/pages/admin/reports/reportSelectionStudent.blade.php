@@ -124,8 +124,11 @@
 
     });
     function gradeSelected(){
-        alert($('#select_section').val());
+        var selectedGradeID = $('#select_section').val();
         $('#select_section').val([]).change();
+        $.get('/getSectionOfGrade/'+selectedGradeID, function(result){
+            
+        };
         //$('#select_employee').val([]).change();
     }
     function sectionSelected(){
@@ -143,7 +146,7 @@
         //     $('#select_employee').val([]).change();
         // }
         switch($('#select_reportType').val()){
-            case 'rep_absent': alert('hello');break;
+            case 'rep_absent': break;
             case 'rep_annual_summary': break;
             case 'rep_attendance': break;
             case 'rep_early_in': break;
@@ -162,7 +165,7 @@
             }
         });
         var grades_selected_count = $('#select_grade').select2('val').length;
-        console.log(grades_selected_count);
+        //console.log(grades_selected_count);
         var original_grades = $('#select_grade').val();
         var grade_array = "";
         for(var i =0; i<grades_selected_count; i++){
@@ -171,7 +174,7 @@
                 grade_array+= ",";
         }
         var sections_selected_count = $('#select_section').val().length;
-        console.log(sections_selected_count);
+        //console.log(sections_selected_count);
         var original_sections = $('#select_section').val();
         var section_array = "";
         for(var i =0; i<sections_selected_count; i++){
