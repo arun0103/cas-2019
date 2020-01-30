@@ -16,6 +16,23 @@
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-sm-4">
+                        <label for="select_reportType">Report Type</label>
+                        <select id="select_reportType" class="form-control select2" data-placeholder="Select Type of Report" name="selectedReportType" required onchange="reportTypeChanged()">
+                            <option></option>
+                            <option value="rep_absent">Absent</option>
+                            <option value="rep_annual_summary">Annual Summary</option>
+                            <option value="rep_attendance">Attendance</option>
+                            <option value="rep_early_in">Early In</option>
+                            <option value="rep_early_out">Early Out</option>
+                            <option value="rep_student_list">Student List</option>
+                            <option value="rep_late_in">Late In</option>
+                            <option value="rep_leave_registered">Leave Registered</option>
+                            <option value="rep_mismatch">Mismatch</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
                         <label for="select_grade">Grade</label>
                         <select id="select_grade" class="form-control select2" multiple data-placeholder="Select Grade" name="selectedGrades[]" required onchange="gradeSelected()">
                             <option></option>
@@ -33,27 +50,13 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-sm-4">
+                    
+                </div>
+                <div class="row">
+                <div class="col-sm-4">
                         <label for="select_student">Student</label>
                         <select id="select_student" class="form-control select2" multiple data-placeholder="Select Student" name="selectedStudents[]">
                             <option></option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <label for="select_reportType">Report Type</label>
-                        <select id="select_reportType" class="form-control select2" data-placeholder="Select Type of Report" name="selectedReportType" required onchange="reportTypeChanged()">
-                            <option></option>
-                            <option value="rep_absent">Absent</option>
-                            <option value="rep_annual_summary">Annual Summary</option>
-                            <option value="rep_attendance">Attendance</option>
-                            <option value="rep_early_in">Early In</option>
-                            <option value="rep_early_out">Early Out</option>
-                            <option value="rep_student_list">Student List</option>
-                            <option value="rep_late_in">Late In</option>
-                            <option value="rep_leave_registered">Leave Registered</option>
-                            <option value="rep_mismatch">Mismatch</option>
                         </select>
                     </div>
                     <div class="col-sm-4">
@@ -121,6 +124,7 @@
 
     });
     function gradeSelected(){
+        alert($('#select_section').val());
         $('#select_section').val([]).change();
         //$('#select_employee').val([]).change();
     }

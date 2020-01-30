@@ -16,6 +16,8 @@ use App\AppliedLeave;
 use App\Student;
 use App\Student_Grade;
 use App\Student_Section;
+use App\Student_Roster;
+use App\Student_Punch;
 
 use PDF;
 use PdfReport;
@@ -1042,39 +1044,46 @@ class ReportController extends Controller
         $fromDate = $req->fromDate;
         $this->fromDate = $fromDate;
         $toDate = $req ->toDate;
-        $branches = $req->branchSelected;
-        $departments = $req->departmentSelected;
-        $employees = $req->selectedEmployees;
+        $grades = $req->selectedGrades;
+        $sections = $req->selectedSections;
+        $students = $req->selectedStudents;
         $reportType = $req->selectedReportType;
         $shifts = $req->selectedShifts;
         $get_report_type = $req->generate_type;
+        //dd($grades);
         switch($reportType){
-            case 'rep_absent': /// Completed
+            case 'rep_absent': /// on test
                 // Report title
                 $title = 'Absent Report'; 
                 $meta = [
                     'From' => $fromDate,
                     'To ' => $toDate,
                 ];
-                $queryBuilder = Roster::whereBetween('date',[$fromDate,$toDate])
-                                ->whereIn('employee_id',$employees)
-                                ->where('company_id',Session::get('company_id'))
+                $queryBuilder = Student_Roster::whereBetween('date',[$fromDate,$toDate])
+                                ->whereIn('student_id',$students)
+                                ->where('institution_id',$comp_id)
                                 ->where(function($query){
-                                        $query->where('final_half_1','AB')->orWhere('final_half_2','AB');
+                                        $query->where('punch_in',null)->orWhere('punch_out',null);
                                     })
-                                ->with('employee','shift');//->orderBy('shift_id','ASC');
+                                ->with('student','shift');//->orderBy('shift_id','ASC');
                //dd($queryBuilder->toSql());
+               
                $columns = [
-                    'Emp Code' => 'employee_id',
+                    'Student ID' => 'student_id',
                     'Name' =>function($result){
-                        return $result->employee['name'];
+                        
+                        return $result->student['name'];
                     },
                     'Date'=>'date', // if no column_name specified, this will automatically seach for snake_case of column name (will be registered_at) column from query result
                     'Shift Name'=>function($result){
                         return $result->shift['name'];
                     },
-                    'Half 1'=>'final_half_1',
-                    'Half 2' =>'final_half_2'
+                    'Punch In'=>function($result){
+                        return $result->punch_in===null?'-':$result->punch_in;
+                    },
+                    'Punch Out' =>function($result){
+                        return $result->punch_out===null?'-':$result->punch_out;
+                    }
                 ];
                 if($get_report_type =="pdf"){
                     return PdfReport::of($title, $meta, $queryBuilder, $columns)
@@ -1102,7 +1111,7 @@ class ReportController extends Controller
                 ];
                 $queryBuilder = Employee::where(['company_id',$comp_id])->whereBetween([['branch_id',$branches],['dept_id',$departments]])->with('punches');
                 //dd($queryBuilder);
-                dd($queryBuilder->toSql());
+                //dd($queryBuilder->toSql());
                 $columns = [
                     'Emp Code' => 'emp_id',
                     'Name' =>function($result){
@@ -1155,35 +1164,35 @@ class ReportController extends Controller
                         ->download('Annual_attendance_report'); // or download('filename here..') to download pdf;
                 }
                 break;
-            case 'rep_attendance': //completed
+            case 'rep_attendance': //on test
                 // Report title
                 $title = 'Attendance Register'; 
                 $meta = [
                     'From' => $fromDate,
                     'To ' => $toDate,
                 ];
-                $queryBuilder = Employee::where('company_id',Session::get('company_id'))
+                $queryBuilder = Student::where('institution_id',Session::get('company_id'))
                                             ->with(['rosters'=> function ($query) use($fromDate,$toDate) {
                                                 $query->whereBetween('date', [$fromDate, $toDate]);
                                             }])
-                                            ->with('first_shift','punch_records')->whereIn('employee_id',$employees);
+                                            ->with('shift','punch_records')->whereIn('student_id',$students);
                 //dd($queryBuilder);
                 $columns = [
-                    'Emp Code' => 'employee_id',
+                    'Student Code' => 'student_id',
                     'Name' =>function($result){
                             return $result->name;
                     },
-                    'Pres'=>function($result){
+                    'Present Days'=>function($result){
                         $present_days_count = 0.0;
                         for($i =0; $i < count($result->rosters); $i++){
-                            if($result->rosters[$i]['final_half_1'] =="PR") 
+                            if($result->rosters[$i]['punch_in'] != null) 
                                 $present_days_count+= 0.5;
-                            if($result->rosters[$i]['final_half_2'] =="PR")
+                            if($result->rosters[$i]['punch_out'] != null)
                                 $present_days_count+= 0.5;
                         }
                         return $present_days_count;
                     },
-                    'W/Off'=>function($result){
+                    'Weekly Off'=>function($result){
                         $w_off_count = 0;
                         for($i =0; $i < count($result->rosters); $i++){
                             if($result->rosters[$i]['is_holiday'] =="O")
@@ -1191,14 +1200,14 @@ class ReportController extends Controller
                         }
                         return $w_off_count;
                     },
-                    'P/Holiday'=>function($result){
-                        $paid_holiday_count =0;
-                        for($i =0; $i < count($result->rosters); $i++){
-                            if($result->rosters[$i]['is_holiday'] =="P")
-                                $paid_holiday_count++;
-                        }
-                        return $paid_holiday_count;
-                    },
+                    // 'P/Holiday'=>function($result){
+                    //     $paid_holiday_count =0;
+                    //     for($i =0; $i < count($result->rosters); $i++){
+                    //         if($result->rosters[$i]['is_holiday'] =="P")
+                    //             $paid_holiday_count++;
+                    //     }
+                    //     return $paid_holiday_count;
+                    // },
                     'Leaves' =>function($result){
                         $leave_count =0;
                         for($i =0; $i < count($result->rosters); $i++){
@@ -1211,25 +1220,25 @@ class ReportController extends Controller
                         $absent_days_count = 0.0;
                         for($i =0; $i < count($result->rosters); $i++){
                             if($result->rosters[$i]['is_holiday'] !="O"){
-                                if($result->rosters[$i]['final_half_1'] =="AB")
+                                if($result->rosters[$i]['punch_in'] == null)
                                     $absent_days_count+=0.5;
-                                if($result->rosters[$i]['final_half_2'] =="AB")
+                                if($result->rosters[$i]['punch_out'] == null)
                                     $absent_days_count+=0.5;
                             }
                         }
                         return $absent_days_count;
                     },
-                    'Total' =>function($result){
-                        return $result->shifts[0]['name'];
-                    },
-                    'Overtime' =>function($result){
-                        //dd($result);
-                        $total_overtime = 0;
-                        for($i =0; $i < count($result->punch_records); $i++){
-                            $total_overtime += $result->punch_records[$i]['overtime'];
-                        }
-                        return $total_overtime.' min';
-                    },
+                    // 'Total' =>function($result){
+                    //     return $result->shift['name'];
+                    // },
+                    // 'Overtime' =>function($result){
+                    //     //dd($result);
+                    //     $total_overtime = 0;
+                    //     for($i =0; $i < count($result->punch_records); $i++){
+                    //         $total_overtime += $result->punch_records[$i]['overtime'];
+                    //     }
+                    //     return $total_overtime.' min';
+                    // },
                 ];
                 if($get_report_type =="pdf"){
                     return PdfReport::of($title, $meta, $queryBuilder, $columns)
@@ -1316,26 +1325,26 @@ class ReportController extends Controller
                     ->download('Daily_punch_'.$fromDate.'-'.$toDate); // or download('filename here..') to download pdf;
                 }
                 break;
-            case 'rep_early_in':  // completed
+            case 'rep_early_in':  // in progress.. on test.. not showing anything as early_in is 0 in all
                 // Report title
                 $title = 'Early Comers Report'; 
                 $meta = [
                     'From' => $fromDate,
                     'To ' => $toDate,
                 ];
-                $queryBuilder = Punch::where([['company_id',Session::get('company_id')]])
-                                ->with('shift','employee')
+                $queryBuilder = Student_Punch::where([['institution_id',Session::get('company_id')]])
+                                ->with('shift','student')
                                 ->whereBetween('punch_date',[$fromDate,$toDate])
                                 ->where('early_in','>',0);
                 // $sorted = $queryBuilder->where($queryBuilder['company_id']==1);
                 // dd($sorted);
                 //dd($queryBuilder);
                 $columns = [
-                    'Emp Code' => function($result){
-                        return $result->employee['employee_id'];
+                    'Student Code' => function($result){
+                        return $result->student['student_id'];
                     },
                     'Name' => function($result){
-                        return $result->employee['name'];
+                        return $result->student['name'];
                     },
                     'In' => 'punch_1',
                     'Out'=>function($result){

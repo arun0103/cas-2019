@@ -87,6 +87,7 @@ Route::put('/updateGrade/{id}','StudentController@updateGrade');
 Route::delete('/deleteGrade/{id}','StudentController@deleteGrade');
 
 Route::get('/admin/sections','StudentController@getSections')->name('viewSections');
+Route::get('/getSectionsOfGrade/{grade_id}','StudentController@getSectionsOfGrade');
 Route::get('/getSectionById/{id}','StudentController@getSectionById');
 Route::post('/addSection','StudentController@addSection');
 Route::put('/updateSection/{id}','StudentController@updateSection');

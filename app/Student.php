@@ -36,5 +36,8 @@ class Student extends Model
     public function rosters(){
         return $this->hasMany('App\Student_Roster','student_id','student_id');
     }
+    public function punch_records(){
+        return $this->hasMany('App\Student_Punch','student_id','student_id');
+    }
     
 }

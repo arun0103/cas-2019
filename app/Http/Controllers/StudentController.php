@@ -155,6 +155,11 @@ class StudentController extends Controller
         return response()->json($delete);
     }
     /************************************ Section *************************************************/
+    public function getSectionsOfGrade($grade_id){
+        $institution_id = Session::get('company_id');
+        $sections = Student_Section::where([['institution_id',$institution_id],['grade_id',$grade_id]])->get();
+        return $sections;
+    }
     public function getSections(){
         $institution_id = Session::get('company_id');
         $sections = Student_Section::where('institution_id',$institution_id)->with('grade')->get();
@@ -190,11 +195,7 @@ class StudentController extends Controller
         $delete = Student_Section::where([['institution_id',$institution_id],['section_id',$id]])->delete();
         return response()->json($delete);
     }
-    public function getSectionsOfGrade($grade_id){
-        $institution_id = Session::get('company_id');
-        $sections = Student_Section::where([['institution_id',$institution_id],['grade_id',$grade_id]])->get();
-        return $sections;
-    }
+
     /**********************************************************************************************************/
 
     public function getStudentsOfGrade($grade_id){
