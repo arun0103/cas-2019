@@ -126,9 +126,9 @@
     function gradeSelected(){
         var selectedGradeID = $('#select_section').val();
         $('#select_section').val([]).change();
-        $.get('/getSectionOfGrade/'+selectedGradeID, function(result){
+        // $.get('/getSectionOfGrade/'+selectedGradeID, function(result){
             
-        };
+        // )};
         //$('#select_employee').val([]).change();
     }
     function sectionSelected(){
