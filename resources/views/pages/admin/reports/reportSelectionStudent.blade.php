@@ -20,7 +20,7 @@
                         <select id="select_reportType" class="form-control select2" data-placeholder="Select Type of Report" name="selectedReportType" required onchange="reportTypeChanged()">
                             <option></option>
                             <option value="rep_absent">Absent</option>
-                            <option value="rep_annual_summary">Annual Summary</option>
+                            <!-- <option value="rep_annual_summary">Annual Summary</option> -->
                             <option value="rep_attendance">Attendance</option>
                             <option value="rep_early_in">Early In</option>
                             <option value="rep_early_out">Early Out</option>
@@ -124,11 +124,17 @@
 
     });
     function gradeSelected(){
-        var selectedGradeID = $('#select_section').val();
-        $('#select_section').val([]).change();
-        // $.get('/getSectionOfGrade/'+selectedGradeID, function(result){
-            
-        // )};
+        var selectedGradeID = $('#select_grade').val();
+        $('#select_section').empty();
+        for(var i = 0; i< selectedGradeID.length; i++){
+            $.get('/getSectionOfGrade/'+selectedGradeID[i], function($result){
+                for(var j=0 ; j < $result.length ; j++){
+                    var sections = $('<option value="'+$result[j]['section_id']+'">'+$result[j]['name']+'</option>');
+                    $('#select_section').append(sections).change();
+                }
+            });
+        }
+        
         //$('#select_employee').val([]).change();
     }
     function sectionSelected(){
@@ -140,17 +146,18 @@
         }
     }
     function reportTypeChanged(){
+        console.log("Selected Report: " + $('#select_reportType').val());
         // if($('#select_category').val().length>0 ){
         //     populateEmployees();
         // }else{
         //     $('#select_employee').val([]).change();
         // }
         switch($('#select_reportType').val()){
-            case 'rep_absent': break;
-            case 'rep_annual_summary': break;
-            case 'rep_attendance': break;
-            case 'rep_early_in': break;
-            case 'rep_early_out': break;
+            case 'rep_absent': break; // completed
+            case 'rep_annual_summary': break; // incomplete
+            case 'rep_attendance': break; // completed
+            case 'rep_early_in': break; // completed
+            case 'rep_early_out': break; //completed
             case 'rep_late_in': break;
             case 'rep_student_list': break;
             case 'rep_leave_registered': break;
@@ -158,7 +165,7 @@
             
         }
     }
-    function populateStudents(){
+    function populateStudents(){               
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

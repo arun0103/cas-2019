@@ -1,15 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 Route::get('/', function () {
     return view('welcome');
 })->name('main');
@@ -37,14 +27,16 @@ Route::post('/dlr/deliveryStatus','SMSController@postDeliveryStatus');
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////// Super Admins////////////////////////////////////
-Route::get('/super/companies/add', function () {
-    return view('pages/super/company/addCompany');
-})->name('addCompany');
 
-Route::get('/admin/companies/view', 'SuperController@getCompanies')->name('companies');
+    Route::get('/super/companies/add', function () {
+        return view('pages/super/company/addCompany');
+    })->name('addCompany');
 
-/// Posting to database routes
-Route::post('/addCompany', 'SuperController@addCompany');
+    Route::get('/admin/companies/view', 'SuperController@getCompanies')->name('companies');
+
+    /// Posting to database routes
+    Route::post('/addCompany', 'SuperController@addCompany');
+
 
 ////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Company Admins ////////////////////////////////
@@ -315,6 +307,10 @@ Route::get('/dashboard/getTotalRosterSummary/{student_id}','StudentDashboardCont
 Route::get('/dashboard/getTotalPresentSummary/{student_id}','StudentDashboardController@getTotalPresentSummary');
 Route::get('/dashboard/getTotalAbsentSummary/{student_id}','StudentDashboardController@getTotalAbsentSummary');
 Route::get('/dashboard/getTotalLateSummary/{student_id}','StudentDashboardController@getTotalLateSummary');
+
+// Student Report
+
+Route::get('/getSectionOfGrade/{grade_id}','StudentReportController@getSectionsOfGrade');
 
 
 

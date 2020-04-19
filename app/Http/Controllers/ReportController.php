@@ -1079,7 +1079,8 @@ class ReportController extends Controller
                         return $result->shift['name'];
                     },
                     'Punch In'=>function($result){
-                        return $result->punch_in===null?'-':$result->punch_in;
+                        $time = explode(' ',$result->punch_in);
+                        return $result->punch_in===null?'-':$time[1];
                     },
                     'Punch Out' =>function($result){
                         return $result->punch_out===null?'-':$result->punch_out;
@@ -1256,7 +1257,7 @@ class ReportController extends Controller
                 } 
                 break;
             
-            case 'rep_daily_punch': // completed
+            case 'rep_daily_punch': // incomplete
                 // Report title
                 $title = 'Punch Details'; 
                 $meta = [
@@ -1392,19 +1393,22 @@ class ReportController extends Controller
                     'From' => $fromDate,
                     'To ' => $toDate,
                 ];
-                $queryBuilder = Punch::where([['company_id',Session::get('company_id')]])
-                                ->with('shift','employee')
+                $queryBuilder = Student_Punch::where([['institution_id',Session::get('company_id')]])
+                                ->with('roster','student')
+                                // ->with(['student',function($query){
+                                //     $query->with('shift')->get();
+                                // }])
                                 ->whereBetween('punch_date',[$fromDate,$toDate])
                                 ->where('early_out','>',0);
                 // $sorted = $queryBuilder->where($queryBuilder['company_id']==1);
                 // dd($sorted);
                 //dd($queryBuilder);
                 $columns = [
-                    'Emp Code' => function($result){
-                        return $result->employee['employee_id'];
+                    'Student ID' => function($result){
+                        return $result->student['student_id'];
                     },
                     'Name' => function($result){
-                        return $result->employee['name'];
+                        return $result->student['name'];
                     },
                     'In' => 'punch_1',
                     'Out'=>function($result){
@@ -1417,9 +1421,9 @@ class ReportController extends Controller
                         else   
                             return "NA";
                     },
-                    'Shift In'=>function($result){
-                        return $result->shift['start_time'];
-                    },
+                    // 'Shift In'=>function($result){
+                    //     return $result->student->shift['start_time'];
+                    // },
                     'Shift Out'=>function($result){
                         return $result->shift['end_time'];
                     },
@@ -1445,45 +1449,48 @@ class ReportController extends Controller
                     ->download('early_out_'.$fromDate.'-'.$toDate); // or download('filename here..') to download pdf;
                 }
                 break;
-            case 'rep_employee_list':  //completed but tweaking needed 
+            case 'rep_student_list':  //completed but tweaking needed 
                 // Report title
-                $title = 'List Of Employees'; 
+                $gradesToString = implode(', ',$grades);
+                $sectionsToString = implode(', ',$sections);
+                $title = 'List Of Students'; 
                 $meta = [
-                    'From' => $fromDate,
-                    'To ' => $toDate,
+                    'Grade' => $gradesToString,
+                    'Section ' => $sectionsToString,
                 ];
-                $queryBuilder = Employee::where([['company_id',Session::get('company_id')]])
-                                ->with('department','first_shift','designation');
+                $queryBuilder = Student::where([['institution_id',Session::get('company_id')]])
+                                ->with('grade','shift','section');
                 //dd($queryBuilder);
                 $columns = [
-                    'Emp Code' => 'employee_id',
+                    'Student Code' => 'student_id',
                     'Card #' => 'card_number',
                     'Name' =>'name',
-                    'Department'=>function($result){
-                        return $result->department['name'];
+                    'Grade'=>function($result){
+                        return $result->grade['name'];
+                    },
+                    'section' =>function($result){
+                        return $result->section['name'];
                     },
                     'Father Name'=>'father_name',
+                    'Guardian Name'=>'guardian_name',
                     'Shift'=>function($result){
-                        return $result->first_shift[0]['name'];
+                        return $result->shift['name'];
                     },
-                    'Designation' =>function($result){
-                        return $result->designation['name'];
-                    },
-                    'Category'=>function($result){
-                        return $result->category['name'];
-                    },
-                    'Sex'=>function($result){
-                        if($result->gender ==1)
-                            return 'Male';
-                        else
-                            return 'Female';
-                    }
+                    'Contact 1' =>'contact_1_number',
+                    'Contact 2' =>'contact_2_number'
+                    
+                    // 'Gender'=>function($result){
+                    //     if($result->gender ==1)
+                    //         return 'Male';
+                    //     else
+                    //         return 'Female';
+                    // }
                 ];
                 if($get_report_type =="pdf"){
                     return PdfReport::of($title, $meta, $queryBuilder, $columns)
                         ->setCss([
                             '.head-content' => 'border-width: 1px',
-                        ])->setPaper('a4')
+                        ])->setPaper('a4', 'landscape')
                         
                         ->stream(); // or download('filename here..') to download pdf;
                 }
@@ -1491,9 +1498,9 @@ class ReportController extends Controller
                     return ExcelReport::of($title, $meta, $queryBuilder, $columns)
                     ->setCss([
                         '.head-content' => 'border-width: 1px',
-                    ])->setPaper('a4')
+                    ])->setPaper('a4', 'landscape')
                     ->groupBy('Date')
-                    ->download('employee_list_'.$fromDate.'-'.$toDate); // or download('filename here..') to download pdf;
+                    ->download('student_list_'.$fromDate.'-'.$toDate); // or download('filename here..') to download pdf;
                 }
                 break;
             case 'rep_form_12':  //incomplete
@@ -1542,16 +1549,16 @@ class ReportController extends Controller
                     'From' => $fromDate,
                     'To ' => $toDate,
                 ];
-                $queryBuilder = Punch::where([['company_id',Session::get('company_id')]])
-                                ->with('shift','employee')
+                $queryBuilder = Student_Punch::where([['institution_id',Session::get('company_id')]])
+                                ->with('shift','student')
                                 ->whereBetween('punch_date',[$fromDate,$toDate])
                                 ->where('late_in','>',0);
                 $columns = [
-                    'Emp Code' => function($result){
-                        return $result->employee['employee_id'];
+                    'Student Code' => function($result){
+                        return $result->student['student_id'];
                     },
                     'Name' => function($result){
-                        return $result->employee['name'];
+                        return $result->student['name'];
                     },
                     'In' => 'punch_1',
                     'Out'=>function($result){
