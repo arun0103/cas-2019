@@ -1041,18 +1041,91 @@ class ReportController extends Controller
     }
     public function generateReportStudent(Request $req){
         $comp_id = Session::get('company_id');
+        $reportType = $req->selectedReportType;
+        
         $fromDate = $req->fromDate;
         $this->fromDate = $fromDate;
         $toDate = $req ->toDate;
         $grades = $req->selectedGrades;
-        $sections = $req->selectedSections;
-        $students = $req->selectedStudents;
-        $reportType = $req->selectedReportType;
-        $shifts = $req->selectedShifts;
         $get_report_type = $req->generate_type;
+        if($reportType != "rep_total_absent_by_grade")
+        {
+            $sections = $req->selectedSections;
+            $students = $req->selectedStudents;
+            $shifts = $req->selectedShifts;
+        }
+           
         //dd($grades);
         switch($reportType){
-            case 'rep_absent': /// on test
+            case 'rep_total_absent_by_grade': /// currently working
+                $grades_meta = implode(', ',$grades);
+                $title = 'Total Absent [Grade] Report'; 
+                $meta = [
+                    'Grade' =>$grades_meta,
+                    'From' => $fromDate,
+                    'To ' => $toDate,
+                ];
+                if(count($grades) >1)
+                    $queryBuilder = Student::whereBetween('grade_id',$grades)
+                                    ->with(['rosters' => function($query) use ($fromDate,$toDate){
+                                        $query->whereBetween('date',[$fromDate,$toDate])->get();
+                                    }])
+                                    ->orderBy('grade_id');
+                else{
+                    $queryBuilder = Student::where('grade_id',$grades)
+                                    ->with(['rosters' => function($query) use ($fromDate,$toDate){
+                                        $query->whereBetween('date',[$fromDate,$toDate])->get();
+                                    }])
+                                    ->with(['grade'=> function($query){
+                                        $query->pluck('name');
+                                    }]);
+                }
+               
+               $columns = [
+                    'Student ID' => 'student_id',
+                    'Name' =>'name',
+                    'Grade' =>function($result){
+                        return $result->grade->name;
+                    },
+                    'Total'=>function($result){
+                        return count($result->rosters);
+                    },
+                    'Absent Days'=>function($result){
+                        $absentRosters = 0;
+                        foreach($result->rosters as $re){
+                            if($re->punch_in == null)
+                                $absentRosters++;
+                        }
+                        return $absentRosters;
+                    },
+                    'Leave Requested'=>function($result){
+                        
+                        return '-';
+                    },
+                    'Leave Approved' =>function($result){
+                        
+                        return '-';
+                    }
+                ];
+                if($get_report_type =="pdf"){
+                    return PdfReport::of($title, $meta, $queryBuilder, $columns)
+                        ->setCss([
+                            '.head-content' => 'border-width: 1px',
+                        ])->setPaper('a4')
+                        
+                        ->stream("Report.pdf"); // or download('filename here..') to download pdf;
+                }
+                else{
+                    return ExcelReport::of($title, $meta, $queryBuilder, $columns)
+                    ->setCss([
+                        '.head-content' => 'border-width: 1px',
+                    ])->setPaper('a4')
+                    ->groupBy('Date')
+                    ->download('Absent_report_'.$fromDate.'-'.$toDate); // or download('filename here..') to download pdf;
+                }
+                break;
+            
+                case 'rep_absent': /// on test
                 // Report title
                 $title = 'Absent Report'; 
                 $meta = [
@@ -1083,7 +1156,8 @@ class ReportController extends Controller
                         return $result->punch_in===null?'-':$time[1];
                     },
                     'Punch Out' =>function($result){
-                        return $result->punch_out===null?'-':$result->punch_out;
+                        $time = explode(' ',$result->punch_out);
+                        return $result->punch_out===null?'-':$time[1];
                     }
                 ];
                 if($get_report_type =="pdf"){
@@ -1092,7 +1166,7 @@ class ReportController extends Controller
                             '.head-content' => 'border-width: 1px',
                         ])->setPaper('a4')
                         
-                        ->stream(); // or download('filename here..') to download pdf;
+                        ->stream($title.".pdf"); // or download('filename here..') to download pdf;
                 }
                 else{
                     return ExcelReport::of($title, $meta, $queryBuilder, $columns)
@@ -1103,7 +1177,122 @@ class ReportController extends Controller
                     ->download('Absent_report_'.$fromDate.'-'.$toDate); // or download('filename here..') to download pdf;
                 }
                 break;
-            case 'rep_annual_summary': // remaining
+                
+            case 'rep_total_present_by_grade': /// currently working
+                $grades_meta = implode(', ',$grades);
+                $title = 'Total Present [Grade] Report'; 
+                $meta = [
+                    'Grade' =>$grades_meta,
+                    'From' => $fromDate,
+                    'To ' => $toDate,
+                ];
+                if(count($grades) >1)
+                    $queryBuilder = Student::whereBetween('grade_id',$grades)
+                                    ->with(['rosters' => function($query) use ($fromDate,$toDate){
+                                        $query->whereBetween('date',[$fromDate,$toDate])->get();
+                                    }])
+                                    ->orderBy('grade_id');
+                else{
+                    $queryBuilder = Student::where('grade_id',$grades)
+                                    ->with(['rosters' => function($query) use ($fromDate,$toDate){
+                                        $query->whereBetween('date',[$fromDate,$toDate])->get();
+                                    }])
+                                    ->with(['grade'=> function($query){
+                                        $query->pluck('name');
+                                    }]);
+                }
+               
+               $columns = [
+                    'Student ID' => 'student_id',
+                    'Name' =>'name',
+                    'Grade' =>function($result){
+                        return $result->grade->name;
+                    },
+                    'Total'=>function($result){
+                        return count($result->rosters);
+                    },
+                    'Present Days'=>function($result){
+                        $presentRosters = 0;
+                        foreach($result->rosters as $re){
+                            if($re->punch_in != null)
+                                $presentRosters++;
+                        }
+                        return $presentRosters;
+                    },
+                    
+                ];
+                if($get_report_type =="pdf"){
+                    return PdfReport::of($title, $meta, $queryBuilder, $columns)
+                        ->setCss([
+                            '.head-content' => 'border-width: 1px',
+                        ])->setPaper('a4')
+                        
+                        ->stream($title.".pdf"); // or download('filename here..') to download pdf;
+                }
+                else{
+                    return ExcelReport::of($title, $meta, $queryBuilder, $columns)
+                    ->setCss([
+                        '.head-content' => 'border-width: 1px',
+                    ])->setPaper('a4')
+                    ->groupBy('Date')
+                    ->download('Absent_report_'.$fromDate.'-'.$toDate); // or download('filename here..') to download pdf;
+                }
+                break;
+            
+                case 'rep_absent': /// on test
+                // Report title
+                $title = 'Absent Report'; 
+                $meta = [
+                    'From' => $fromDate,
+                    'To ' => $toDate,
+                ];
+                $queryBuilder = Student_Roster::whereBetween('date',[$fromDate,$toDate])
+                                ->whereIn('student_id',$students)
+                                ->where('institution_id',$comp_id)
+                                ->where(function($query){
+                                        $query->where('punch_in',null)->orWhere('punch_out',null);
+                                    })
+                                ->with('student','shift');//->orderBy('shift_id','ASC');
+               //dd($queryBuilder->toSql());
+               
+               $columns = [
+                    'Student ID' => 'student_id',
+                    'Name' =>function($result){
+                        
+                        return $result->student['name'];
+                    },
+                    'Date'=>'date', // if no column_name specified, this will automatically seach for snake_case of column name (will be registered_at) column from query result
+                    'Shift Name'=>function($result){
+                        return $result->shift['name'];
+                    },
+                    'Punch In'=>function($result){
+                        $time = explode(' ',$result->punch_in);
+                        return $result->punch_in===null?'-':$time[1];
+                    },
+                    'Punch Out' =>function($result){
+                        $time = explode(' ',$result->punch_out);
+                        return $result->punch_out===null?'-':$time[1];
+                    }
+                ];
+                if($get_report_type =="pdf"){
+                    return PdfReport::of($title, $meta, $queryBuilder, $columns)
+                        ->setCss([
+                            '.head-content' => 'border-width: 1px',
+                        ])->setPaper('a4')
+                        
+                        ->stream($title.".pdf"); // or download('filename here..') to download pdf;
+                }
+                else{
+                    return ExcelReport::of($title, $meta, $queryBuilder, $columns)
+                    ->setCss([
+                        '.head-content' => 'border-width: 1px',
+                    ])->setPaper('a4')
+                    ->groupBy('Date')
+                    ->download('Absent_report_'.$fromDate.'-'.$toDate); // or download('filename here..') to download pdf;
+                }
+                break;
+                
+                case 'rep_annual_summary': // remaining
                 // Report title
                 $title = 'Annual Performance Summary'; 
                 $meta = [
@@ -1692,10 +1881,10 @@ class ReportController extends Controller
         }
     
         // For displaying filters description on header
-        $meta = [
-            'Shift Wise Absent Report',
-            'from' => $fromDate . ' To ' . $toDate,
-        ];
+        // $meta = [
+        //     'Shift Wise Absent Report',
+        //     'from' => $fromDate . ' To ' . $toDate,
+        // ];
     }
 
     public function pdfview(Request $request){

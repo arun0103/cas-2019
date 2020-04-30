@@ -63,6 +63,19 @@
                 margin-bottom: 30px;
             }
         </style>
+        <script src="{{asset('js/plugins/jquery/jquery-3.3.1.js')}}"></script>
+        <script>
+            $(document).ready(function () {
+                var screen_width = screen.width;
+                var screen_height = screen.height;
+                setInterval(function(){ 
+                    if(screen_width !== screen.width)
+                    console.log(screen.width + " x " + screen.height);
+                    screen_width = screen.width;
+                    screen_height = screen.height;
+                 }, 1000);
+            });
+        </script>
     </head>
     <body>
         <div class="flex-center position-ref full-height">

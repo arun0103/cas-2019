@@ -19,20 +19,21 @@
                         <label for="select_reportType">Report Type</label>
                         <select id="select_reportType" class="form-control select2" data-placeholder="Select Type of Report" name="selectedReportType" required onchange="reportTypeChanged()">
                             <option></option>
+                            <option value="rep_total_absent_by_grade">Total Absent [Grade]</option> 
+                            <option value="rep_total_present_by_grade">Total Present [Grade]</option> 
                             <option value="rep_absent">Absent</option>
                             <!-- <option value="rep_annual_summary">Annual Summary</option> -->
                             <option value="rep_attendance">Attendance</option>
                             <option value="rep_early_in">Early In</option>
                             <option value="rep_early_out">Early Out</option>
-                            <option value="rep_student_list">Student List</option>
+                            <!-- <option value="rep_student_list">Student List</option> -->
                             <option value="rep_late_in">Late In</option>
-                            <option value="rep_leave_registered">Leave Registered</option>
-                            <option value="rep_mismatch">Mismatch</option>
+                            <!-- <option value="rep_leave_registered">Leave Registered</option> -->
+                            <!-- <option value="rep_mismatch">Mismatch</option> -->
                         </select>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
+                
+                    <div class="col-sm-4" id="div_grade">
                         <label for="select_grade">Grade</label>
                         <select id="select_grade" class="form-control select2" multiple data-placeholder="Select Grade" name="selectedGrades[]" required onchange="gradeSelected()">
                             <option></option>
@@ -41,7 +42,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4" id="div_section">
                         <label for="select_section">Section</label>
                         <select id="select_section" class="form-control select2" multiple data-placeholder="Select Section" name="selectedSections[]" required onchange="sectionSelected()">
                             <option></option>
@@ -50,16 +51,15 @@
                             @endforeach
                         </select>
                     </div>
-                    
                 </div>
                 <div class="row">
-                <div class="col-sm-4">
+                    <div class="col-sm-4" id="div_student">
                         <label for="select_student">Student</label>
                         <select id="select_student" class="form-control select2" multiple data-placeholder="Select Student" name="selectedStudents[]">
                             <option></option>
                         </select>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4" id="div_from">
                         <label for="datepicker_from">From</label>
                         <div class="input-group date">
                             <div class="input-group-addon left-addon">
@@ -68,7 +68,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4" id="div_to">
                         <label for="datepicker_to">To</label>
                         <div class="input-group date">
                             <div class="input-group-addon left-addon">
@@ -102,6 +102,7 @@
 <script src="{{asset('js/plugins/select2/select2.full.min.js')}}"></script>
 <script>
     $(document).ready(function () {
+        console.log(screen.width + " x " + screen.height);
         $('#employeeTable').DataTable({
             'paging'        : true,
             'lengthChange'  : true,
@@ -147,21 +148,85 @@
     }
     function reportTypeChanged(){
         console.log("Selected Report: " + $('#select_reportType').val());
-        // if($('#select_category').val().length>0 ){
-        //     populateEmployees();
-        // }else{
-        //     $('#select_employee').val([]).change();
-        // }
+        
         switch($('#select_reportType').val()){
-            case 'rep_absent': break; // completed
-            case 'rep_annual_summary': break; // incomplete
-            case 'rep_attendance': break; // completed
-            case 'rep_early_in': break; // completed
-            case 'rep_early_out': break; //completed
-            case 'rep_late_in': break;
-            case 'rep_student_list': break;
-            case 'rep_leave_registered': break;
-            case 'rep_mismatch': break;
+            case 'rep_total_absent_by_grade' :
+                $('#select_section').attr('required',false);
+                $('#select_student').attr('required',false);
+               
+                $('#div_grade').hide("slow");
+                $('#div_section').hide("slow");
+                $('#div_student').hide("slow");
+                $('#div_from').hide("slow");
+                $('#div_to').hide("slow");
+
+                $('#div_grade').show("fast");
+                $('#div_from').show("fast");
+                $('#div_to').show("fast");
+                break;
+            case 'rep_total_present_by_grade' :
+                $('#select_section').attr('required',false);
+                $('#select_student').attr('required',false);
+               
+                $('#div_grade').hide("slow");
+                $('#div_section').hide("slow");
+                $('#div_student').hide("slow");
+                $('#div_from').hide("slow");
+                $('#div_to').hide("slow");
+
+                $('#div_grade').show("fast");
+                $('#div_from').show("fast");
+                $('#div_to').show("fast");
+                break;
+            case 'rep_absent': 
+                $('#select_section').attr('required',true);
+                $('#select_student').attr('required',true);
+
+                $('#div_grade').hide("slow");
+                $('#div_section').hide("slow");
+                $('#div_student').hide("slow");
+                $('#div_from').hide("slow");
+                $('#div_to').hide("slow");
+
+
+                $('#div_grade').show("fast");
+                $('#div_section').show("fast");
+                $('#div_student').show("fast");
+                $('#div_from').show("fast");
+                $('#div_to').show("fast");
+                break; // completed
+            // case 'rep_annual_summary': break; // incomplete
+            // case 'rep_attendance': break; // completed
+            // case 'rep_early_in': break; // completed
+            // case 'rep_early_out': break; //completed
+            // case 'rep_late_in': break;
+            // case 'rep_student_list': break;
+            // case 'rep_leave_registered': break;
+            // case 'rep_mismatch': break;
+
+            default:
+                $('#select_section').attr('required',false);
+                $('#select_student').attr('required',false);
+
+                $('#select_grade').empty();
+                $('#select_section').empty();
+                $('#select_student').empty();
+                $('#datepicker_from').empty();
+                $('#datepicker_o').empty();
+
+                $('#div_grade').hide("slow");
+                $('#div_section').hide("slow");
+                $('#div_student').hide("slow");
+                $('#div_from').hide("slow");
+                $('#div_to').hide("slow");
+
+                $('#div_grade').show("fast", 'swing');
+                $('#div_section').show("slow", 'swing');
+                $('#div_student').show("fast", 'swing');
+                $('#div_from').show("slow", 'swing');
+                $('#div_to').show("slow", 'swing');
+
+
             
         }
     }
