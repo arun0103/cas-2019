@@ -16,6 +16,35 @@
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-sm-3">
+                        <label for="select_reportType">Report Type</label>
+                        <select id="select_reportType" class="form-control select2" data-placeholder="Select Type of Report" name="selectedReportType" onchange="select_reportType_changed()" required>
+                            <option></option>
+                            <option value="rep_absent">Absent</option>
+                            <option value="rep_annual_summary">Annual Summary</option>
+                            <option value="rep_attendance">Attendance</option>
+                            <option value="rep_daily_punch">Daily Punch</option>
+                            <option value="rep_early_in">Early In</option>
+                            <option value="rep_early_out">Early Out</option>
+                            <option value="rep_employee_list">Employee List</option>
+                            <option value="rep_late_in">Late In</option>
+                            <option value="rep_manpower">Manpower</option>
+                            <!-- <option value="rep_canteen_1">Canteen 1</option>
+                            <option value="rep_canteen_2">Canteen 2</option> 
+                            <option value="rep_form_12">Form 12</option>
+                            <option value="rep_form_14_el">Form 14 - EL</option>
+                            <option value="rep_form_b_cl">Form B-CL</option>
+                            <option value="rep_leave_registered">Leave Registered</option>
+                            <option value="rep_mismatch">Mismatch</option>
+                            <option value="rep_movement">Movement</option>
+                            <option value="rep_muster">Muster</option>
+                            <option value="rep_overstay">Overstay</option>
+                            <option value="rep_punch_card">Punch Card</option>
+                            <option value="re_register">Register</option>  -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row" id="div_report_param_1">
+                    <div class="col-sm-3">
                         <label for="select_branch">Branch</label>
                         <select id="select_branch" class="form-control select2" multiple data-placeholder="Select Branch" name="selectedBranches[]" required onchange="branchSelected()">
                             <option></option>
@@ -43,49 +72,23 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
+                        <label for="select_shift">Shift</label>
+                        <select id="select_shift" class="form-control select2" multiple data-placeholder="Select Shift" name="selectedShifts[]">
+                            <option></option>
+                            @foreach($shifts as $shift)
+                                <option value="{{$shift->shift_id}}">{{$shift->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row" id="div_report_param_2"> 
+                    <div class="col-sm-3">
                         <label for="select_employee">Employee</label>
                         <select id="select_employee" class="form-control select2" multiple data-placeholder="Select Employee" name="selectedEmployees[]">
                             <option></option>
                         </select>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-3">
-                            <label for="select_shift">Shift</label>
-                            <select id="select_shift" class="form-control select2" multiple data-placeholder="Select Shift" name="selectedShifts[]">
-                                <option></option>
-                                @foreach($shifts as $shift)
-                                    <option value="{{$shift->shift_id}}">{{$shift->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    <div class="col-sm-3">
-                        <label for="select_reportType">Report Type</label>
-                        <select id="select_reportType" class="form-control select2" data-placeholder="Select Type of Report" name="selectedReportType" required>
-                            <option></option>
-                            <option value="rep_absent">Absent</option>
-                            <option value="rep_annual_summary">Annual Summary</option>
-                            <option value="rep_attendance">Attendance</option>
-                            <!-- <option value="rep_canteen_1">Canteen 1</option>
-                            <option value="rep_canteen_2">Canteen 2</option> -->
-                            <option value="rep_daily_punch">Daily Punch</option>
-                            <option value="rep_early_in">Early In</option>
-                            <option value="rep_early_out">Early Out</option>
-                            <option value="rep_employee_list">Employee List</option>
-                            <!-- <option value="rep_form_12">Form 12</option>
-                            <option value="rep_form_14_el">Form 14 - EL</option>
-                            <option value="rep_form_b_cl">Form B-CL</option> -->
-                            <option value="rep_late_in">Late In</option>
-                            <option value="rep_leave_registered">Leave Registered</option>
-                            <option value="rep_manpower">Manpower</option>
-                            <option value="rep_mismatch">Mismatch</option>
-                            <option value="rep_movement">Movement</option>
-                            <option value="rep_muster">Muster</option>
-                            <option value="rep_overstay">Overstay</option>
-                            <option value="rep_punch_card">Punch Card</option>
-                            <option value="re_register">Register</option> 
-                        </select>
-                    </div>
+                    
                     <div class="col-sm-3">
                         <label for="datepicker_from">From</label>
                         <div class="input-group date">
@@ -106,7 +109,7 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row">
+                <div class="row" id="div_generate">
                     <input type="hidden" id="generate_type" name="generate_type">
                     <div class="col-sm-2">
                         <button class="btn btn-primary" onclick="$('#generate_type').val('pdf').change()">Generate PDF</button>
@@ -129,6 +132,10 @@
 <script src="{{asset('js/plugins/select2/select2.full.min.js')}}"></script>
 <script>
     $(document).ready(function () {
+        $('#div_report_param_1').hide();
+        $('#div_report_param_2').hide();
+        $('#div_generate').hide();
+
         $('#employeeTable').DataTable({
             'paging'        : true,
             'lengthChange'  : true,
@@ -148,8 +155,36 @@
         //Initialize Select2 Elements
         $('.select2').select2();
         $('.loading').hide();
+        
 
     });
+    function select_reportType_changed(){
+        switch($('select_reportType').val()){
+            case 'rep_absent': 
+                break;
+            case 'rep_annual_summary': 
+                break;
+            case 'rep_attendance': 
+                break;
+            case 'rep_daily_punch': 
+                break;
+            case 'rep_early_in': 
+                break;
+            case 'rep_early_out': 
+                break;
+            case 'rep_employee_list': 
+                break;
+            case 'rep_late_in': 
+                break;
+            case 'rep_manpower': 
+                break;
+            
+            default: 
+        }
+        $('#div_report_param_1').show('fast');
+        $('#div_report_param_2').show('fast');
+        $('#div_generate').show('fast');
+    }
     function branchSelected(){
         $('#select_department').val([]).change();
         $('#select_employee').val([]).change();
